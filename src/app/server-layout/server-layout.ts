@@ -1,9 +1,72 @@
 import { Component } from '@angular/core';
+import { ServerNavModel, ServersSidebar } from '../shared/servers-sidebar/servers-sidebar';
+import { ServerChat } from './server-chat/server-chat';
+import { ServerOverview } from './server-overview/server-overview';
+import { MembersSidebar } from './server-members/members-sidebar';
 
 @Component({
-  imports: [],
-  selector: 'app-server-layout',
-  styleUrl: './server-layout.css',
-  templateUrl: './server-layout.html',
+    imports: [ServersSidebar, ServerChat, ServerOverview, MembersSidebar],
+    selector: 'app-server-layout',
+    styleUrl: './server-layout.css',
+    templateUrl: './server-layout.html',
 })
-export class ServerLayout {}
+export class ServerLayout {
+    serverName: string = 'kuharka';
+
+    servers: ServerNavModel[] = [
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+        {
+            iconPath: 'icon',
+        },
+    ];
+}

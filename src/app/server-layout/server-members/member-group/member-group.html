@@ -1,0 +1,7 @@
+
+<div class="list-container">
+    <div> {{ name }}</div>
+    @for (member of members; track $index){
+        <member [username]="member.username"></member>
+    }
+</div>

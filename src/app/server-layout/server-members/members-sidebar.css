@@ -1,0 +1,19 @@
+.sidebar {
+    box-sizing: border-box;
+    flex-shrink: 0;
+
+    width: 300px;
+    height: 100vh;
+    padding: 20px 0 0 0;
+
+    background: var(--color-surface0);
+    border:var(--border-width) var(--border-type) var(--color-border);
+    border-bottom: none;
+    border-top: none;
+    border-right: none;
+
+
+    border-radius: 20px 20px 0 0;
+
+    overflow-y: scroll
+}

@@ -1,1 +1,75 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+    /*Server layout styles*/
+    --server-overview-width: 320px;
+    --border-type: solid;
+    --border-width: 3px;
+    --server-surface-gap: 15px;
+
+    /*Server header styles*/
+    --server-header-font-size: 24px;
+    --server-header-margin: 100px;
+
+    /* Servers sidebar */
+    --server-nav-size: 50px;
+    --server-nav-gap: 20px;
+    --server-sidebar-width: 80px;
+}
+
+:root {
+    --neutral-0: #ffffff;
+    --neutral-100: #f1f5f9;
+    --neutral-400: #94a3b8;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+    --neutral-950: #020617;
+
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --blue-800: #1e40af;
+    --blue-950: #172554;
+
+    --red-400: #f87171;
+
+    --color-background: var(--neutral-950);
+    --color-surface0: var(--neutral-900);
+    --color-surface1: var(--neutral-800);
+
+    --color-text: var(--neutral-100);
+    --color-text-muted: var(--neutral-400);
+    --color-border: var(--neutral-700);
+
+    --color-primary: var(--blue-600);
+    --color-primary-hover: var(--blue-700);
+    --color-primary-active: var(--blue-800);
+    --color-primary-soft: var(--blue-950);
+    --color-on-primary: var(--neutral-0);
+
+    --color-error: var(--red-400);
+}
+
+body {
+    margin: 0;
+}
+
+input{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+
+}
+
+@font-face {
+    font-family: 'prosto-one';
+    src: url('/fonts/ProstoOne-Regular.ttf');
+}
+
+body{
+    font-family: "prosto-one", sans-serif;
+    color: var(--color-text);
+    background-color: var(--color-background);
+}
+

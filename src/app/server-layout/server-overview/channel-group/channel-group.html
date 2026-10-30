@@ -1,0 +1,11 @@
+<div class="container">
+    <div class="channel-header">
+        {{name}}
+    </div>
+    @for (channel of channels; track $index){
+        <chat-channel
+            [type]="channel.type"
+            [name]="channel.name"
+        />
+    }
+</div>

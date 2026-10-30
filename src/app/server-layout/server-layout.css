@@ -1,0 +1,9 @@
+.container{
+    display: flex;
+
+    flex: 1;
+
+    gap: var(--server-nav-gap);
+
+    overflow-y: auto;
+}

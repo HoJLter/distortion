@@ -1,0 +1,10 @@
+.container{
+    display: flex;
+
+    flex-direction: row-reverse;
+
+    font-size: var(--server-header-font-size);
+
+    margin-bottom: var(--server-header-margin);
+    padding: 0 20px 0 0;
+}

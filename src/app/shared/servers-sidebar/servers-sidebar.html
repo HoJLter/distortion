@@ -1,1 +1,9 @@
-<p>servers-sidebar works!</p>
+<div class="sidebar">
+    <div class="servers-container">
+        @for (server_nav_item of servers; track $index){
+            <server-nav-item
+                [style.background-image]="server_nav_item"
+            />
+        }
+    </div>
+</div>

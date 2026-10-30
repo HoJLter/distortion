@@ -1,0 +1,29 @@
+.sidebar {
+    box-sizing: border-box;
+    width: var(--server-sidebar-width);
+    height: 100vh;
+    padding: 50px 0 0 0;
+
+    flex-shrink: 0;
+
+    background-color: var(--color-surface0);
+
+    border-radius: 0 50px 0 0;
+    border:var(--border-width) var(--border-type) var(--color-border);
+    border-bottom-width: 0;
+    border-top-width: 0;
+    border-left-width: 0;
+
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.servers-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 20px 0 -20px 0;
+
+    gap: var(--server-nav-gap);
+}

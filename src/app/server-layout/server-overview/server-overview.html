@@ -1,0 +1,14 @@
+<div class="container">
+    <server-description
+        [serverName]="serverName"
+    />
+    @for (channelGroup of channelGroups; track $index){
+        <channel-group
+            [channels]="channelGroup.channels"
+            [name]="channelGroup.name"
+            [type]="channelGroup.type"
+        />
+    }
+</div>
+
+

@@ -1,0 +1,8 @@
+<div class="sidebar">
+    @for (group of groups; track $index){
+        <member-group
+            [name]="group.name"
+            [members]="group.members"
+        />
+    }
+</div>
