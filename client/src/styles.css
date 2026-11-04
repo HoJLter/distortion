@@ -77,3 +77,24 @@ body{
     background-color: var(--color-background);
 }
 
+/* Бегунок */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+}
+
+/* Фон (дорожка) */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Бегунок (ползунок) */
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary-soft);
+    border-radius: 4px;
+}
+
+/* Бегунок при наведении */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-active);
+}

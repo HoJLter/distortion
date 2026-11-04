@@ -1,5 +1,5 @@
 .server-icon{
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-soft);
 
     width: var(--server-nav-size);
     height: var(--server-nav-size);
