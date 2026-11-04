@@ -8,7 +8,6 @@
 
     background-color: var(--color-surface0);
 
-    border-radius: 0 50px 0 0;
     border:var(--border-width) var(--border-type) var(--color-border);
     border-bottom-width: 0;
     border-top-width: 0;

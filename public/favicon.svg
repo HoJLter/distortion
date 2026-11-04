@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-label="ordox lunar messenger vector logo">
+<defs>
+ <linearGradient id="moon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F4F8FF"/><stop offset=".38" stop-color="#B5C9E8"/><stop offset=".72" stop-color="#718DB7"/><stop offset="1" stop-color="#2F4F7D"/></linearGradient>
+ <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B6E8FF"/><stop offset=".5" stop-color="#6BAEFF"/><stop offset="1" stop-color="#415DDE"/></linearGradient>
+ <linearGradient id="txt" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#F6FAFF"/><stop offset="1" stop-color="#9FB8DB"/></linearGradient>
+ <radialGradient id="crater"><stop stop-color="#45658E" stop-opacity=".76"/><stop offset=".7" stop-color="#6F8DAE" stop-opacity=".35"/><stop offset=".92" stop-color="#E8F5FF" stop-opacity=".63"/><stop offset="1" stop-color="#F9FCFF" stop-opacity=".05"/></radialGradient>
+ <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+ <clipPath id="crescentClip"><path d="M 615 190 A 250 250 0 1 0 643 676 Q 674 675 711 704 Q 702 660 715 624 A 207 207 0 0 1 615 190 Z M 638 247 A 195 195 0 1 0 638 637 A 195 195 0 1 0 638 247 Z" clip-rule="evenodd"/></clipPath>
+</defs>
+<!-- Subtle halo around the lunar communication mark -->
+<circle cx="500" cy="444" r="267" fill="none" stroke="#3474B9" stroke-opacity=".4" stroke-width="24" filter="url(#glow)"/>
+<!-- Astral orbit: all paths remain editable vectors -->
+<ellipse cx="503" cy="447" rx="318" ry="152" transform="rotate(-24 503 447)" fill="none" stroke="#789ED4" stroke-opacity=".7" stroke-width="2.8"/>
+<ellipse cx="503" cy="447" rx="311" ry="143" transform="rotate(-24 503 447)" fill="none" stroke="#D6F1FF" stroke-opacity=".28" stroke-width="1.1" stroke-dasharray="3 12"/>
+<!-- Moon crescent and chat bubble tail -->
+<path d="M 615 190 A 250 250 0 1 0 643 676 Q 674 675 711 704 Q 702 660 715 624 A 207 207 0 0 1 615 190 Z M 638 247 A 195 195 0 1 0 638 637 A 195 195 0 1 0 638 247 Z" fill="url(#moon)" fill-rule="evenodd" stroke="#B9DDFF" stroke-width="3" stroke-linejoin="round"/>
+<!-- Vector crater features clipped to moon silhouette -->
+<g clip-path="url(#crescentClip)">
+ <circle cx="420" cy="305" r="46" fill="url(#crater)"/><circle cx="352" cy="383" r="28" fill="url(#crater)"/>
+ <circle cx="407" cy="478" r="63" fill="url(#crater)"/><circle cx="489" cy="559" r="36" fill="url(#crater)"/>
+ <circle cx="335" cy="518" r="24" fill="url(#crater)"/><circle cx="531" cy="259" r="21" fill="url(#crater)"/>
+ <circle cx="377" cy="597" r="25" fill="url(#crater)"/><circle cx="477" cy="347" r="19" fill="url(#crater)"/>
+ <circle cx="547" cy="649" r="18" fill="url(#crater)"/><circle cx="316" cy="444" r="12" fill="url(#crater)"/>
+ <circle cx="484" cy="434" r="15" fill="url(#crater)"/><circle cx="442" cy="650" r="17" fill="url(#crater)"/>
+ <path d="M 300 440 Q 360 407 394 436 M 388 550 Q 430 524 484 540 M 402 328 Q 438 291 477 310 M 459 611 Q 498 599 549 620" fill="none" stroke="#EFF9FF" stroke-opacity=".25" stroke-width="3"/>
+</g>
+<!-- Typing indicator, using vector circles -->
+<g fill="#DDEEFF" stroke="#9CD8FF" stroke-width="2"><circle cx="487" cy="446" r="15"/><circle cx="548" cy="446" r="15"/><circle cx="609" cy="446" r="15"/></g>
+<g fill="#FFFFFF" opacity=".75"><circle cx="482" cy="440" r="4"/><circle cx="543" cy="440" r="4"/><circle cx="604" cy="440" r="4"/></g>
+<!-- Orbital points and star -->
+<g fill="#C8E7FF" stroke="#8ABCF4" stroke-width="2"><circle cx="212" cy="558" r="12"/><circle cx="787" cy="335" r="9"/><circle cx="772" cy="573" r="5"/></g>
+<path d="M 755 196 L 763 222 L 789 230 L 763 238 L 755 264 L 747 238 L 721 230 L 747 222 Z" fill="#D9F4FF"/>
+<circle cx="755" cy="230" r="31" fill="#7FC8FF" opacity=".3" filter="url(#glow)"/>
+<!-- wordmark; text is editable in Figma/Inkscape -->
+<text x="500" y="862" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="151" letter-spacing="-10" fill="url(#txt)">ordox</text>
+<path d="M 298 909 H 466 M 534 909 H 702" stroke="url(#rim)" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+<path d="M 500 895 L 508 909 L 500 923 L 492 909 Z" fill="#B5E6FF"/>
+</svg>

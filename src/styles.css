@@ -2,8 +2,8 @@
     /*Server layout styles*/
     --server-overview-width: 320px;
     --border-type: solid;
-    --border-width: 3px;
-    --server-surface-gap: 15px;
+    --border-width: 0px;
+    --server-surface-gap: 8px;
 
     /*Server header styles*/
     --server-header-font-size: 24px;
