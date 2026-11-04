@@ -3,13 +3,28 @@
     background-color: var(--color-surface0);
 
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
+    min-height: 0;
 
     border:var(--border-width) var(--border-type) var(--color-border);
     border-bottom-width: 0;
     border-top-width: 0;
 }
 
-.container{
-    margin: 0 0 2% 0;
+
+.messages{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--message-external-gap);
+
+
+    overflow-y: auto;
+    scroll-behavior: smooth;
+
+    padding: 30px 130px;
+}
+
+chat-input{
+    margin: 0 0 20px 0;
 }

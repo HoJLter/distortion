@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
     templateUrl: './server-description.html',
 })
 export class ServerDescription {
-    @Input() serverName: string = "";
+    @Input() serverName: string = "Undefined server name";
 }

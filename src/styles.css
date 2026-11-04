@@ -13,6 +13,10 @@
     --server-nav-size: 50px;
     --server-nav-gap: 20px;
     --server-sidebar-width: 80px;
+
+    /* Chat */
+    --message-inner-gap: 15px;
+    --message-external-gap: 15px;
 }
 
 :root {

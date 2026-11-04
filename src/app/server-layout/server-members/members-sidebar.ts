@@ -1,12 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { MemberGroup, MemberModel } from './member-group/member-group';
+import { MemberGroup } from './member-group/member-group';
+import { MemberGroupModel } from '../../shared/models';
 
-
-
-export interface MemberGroupModel {
-    name: string;
-    members: MemberModel[];
-}
 
 @Component({
     imports: [MemberGroup],

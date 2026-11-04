@@ -1,9 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Member } from './member/member';
-
-export interface MemberModel {
-    username: string;
-}
+import { Member } from '../../../shared/member/member';
+import { MemberModel } from '../../../shared/models';
 
 @Component({
     imports: [Member],

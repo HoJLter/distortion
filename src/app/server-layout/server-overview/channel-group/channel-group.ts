@@ -1,12 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { MemberModel } from '../../server-members/member-group/member-group';
 import { ChatChannel } from './chat-channel/chat-channel';
+import { ChannelModel } from '../../../shared/models';
 
-export interface ChannelModel {
-    name: string;
-    type: string;
-    users: MemberModel[];
-}
 
 @Component({
     imports: [ChatChannel],

@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { ServerNavModel, ServersSidebar } from '../shared/servers-sidebar/servers-sidebar';
+import { ServersSidebar } from '../shared/servers-sidebar/servers-sidebar';
 import { ServerChat } from './server-chat/server-chat';
 import { ServerOverview } from './server-overview/server-overview';
 import { MembersSidebar } from './server-members/members-sidebar';
+import { ServerNavModel } from '../shared/models';
 
 @Component({
     imports: [ServersSidebar, ServerChat, ServerOverview, MembersSidebar],

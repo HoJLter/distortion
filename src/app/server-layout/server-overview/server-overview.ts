@@ -1,23 +1,23 @@
 import { Component, Input } from '@angular/core';
-import { Member } from '../server-members/member-group/member/member';
-import { MemberGroup, MemberModel } from '../server-members/member-group/member-group';
+import { Member } from '../../shared/member/member';
+import { MemberGroup } from '../server-members/member-group/member-group';
 import { ServerDescription } from './server-description/server-description';
-import { ChannelGroup, ChannelModel } from './channel-group/channel-group';
+import { ChannelGroup } from './channel-group/channel-group';
+import { Profile } from '../../shared/profile/profile';
+import { ChannelGroupModel } from '../../shared/models';
 
-export interface ChannelGroupModel {
-    name: string;
-    type: string;
-    channels: ChannelModel[];
-}
+
 
 @Component({
-    imports: [MemberGroup, ServerDescription, ChannelGroup],
+    imports: [ServerDescription, ChannelGroup, Profile],
     selector: 'server-overview',
     styleUrl: './server-overview.css',
     templateUrl: './server-overview.html',
 })
 export class ServerOverview {
-    @Input() serverName: string = "Server name";
+    @Input() serverName: string = 'Server name';
+
+    username: string = 'WASSUP';
 
     channelGroups: ChannelGroupModel[] = [
         {
@@ -38,7 +38,6 @@ export class ServerOverview {
                     name: 'voice 3',
                     type: 'voice',
                     users: [],
-
                 },
             ],
         },
@@ -62,6 +61,6 @@ export class ServerOverview {
                     users: [],
                 },
             ],
-        }
+        },
     ];
 }

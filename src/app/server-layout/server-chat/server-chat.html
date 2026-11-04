@@ -1,3 +1,10 @@
-<div class="container">
-    <chat-input/>
+<div class="messages">
+    @for (message of chatMessages; track $index){
+        <message
+            [user]="message.user"
+            [message]="message.msg"
+        />
+    }
 </div>
+
+<chat-input/>

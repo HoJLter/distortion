@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ServerNavItem } from './server-nav-item/server-nav-item';
+import { ServerNavModel } from '../models';
 
-
-export interface ServerNavModel {
-    iconPath: string;
-}
 
 @Component({
     imports: [ServerNavItem],
