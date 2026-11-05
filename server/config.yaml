@@ -1,0 +1,10 @@
+logger:
+  level: "debug"
+  format: "%Y-%M-%d"
+
+server:
+  port: 21530
+
+database:
+  host: "localhost"
+  port: 21550
