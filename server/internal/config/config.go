@@ -6,14 +6,24 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+type LoggerType string
+
+const (
+	TextLogger LoggerType = "text"
+	JsonLogger LoggerType = "json"
+)
+
 type DatabaseConfig struct {
 	Host string `yaml:"host"`
 	Port uint16 `yaml:"port"`
 }
 
 type LoggingConfig struct {
-	Level  string `yaml:"level"`
-	Format string `yaml:"format"`
+	Level     string     `yaml:"level"`
+	Format    string     `yaml:"format"`
+	AddSource bool       `yaml:"add_source"`
+	JsonFile  string     `yaml:"json_file"`
+	Type      LoggerType `yaml:"type"`
 }
 
 type ServerConfig struct {

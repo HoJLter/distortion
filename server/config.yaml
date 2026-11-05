@@ -1,5 +1,8 @@
 logger:
   level: "debug"
+  type: "text"
+  json_file: "logs.json"
+  add_source: false
   format: "%Y-%M-%d"
 
 server:
