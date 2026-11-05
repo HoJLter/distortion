@@ -18,6 +18,7 @@ export interface ServerNavModel {
 
 export interface ChannelModel {
     name: string;
+    uid: string;
     type: string;
     users: MemberModel[];
 }

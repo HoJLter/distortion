@@ -1,9 +1,9 @@
 
 <chat-header
-    [header]="currentChannel?.name ?? 'choose the channel'"
+    [header]="selectedChannel?.name ?? 'choose the channel'"
 />
 <div class="messages">
-    @for (message of chatMessages; track $index){
+    @for (message of chatMessages(); track $index){
         <message
             [user]="message.user"
             [message]="message.msg"

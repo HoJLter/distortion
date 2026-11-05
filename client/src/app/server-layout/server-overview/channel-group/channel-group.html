@@ -1,11 +1,10 @@
 <div class="container">
     <div class="channel-header">
-        {{name}}
+        {{channelGroup.name}}
     </div>
-    @for (channel of channels; track $index){
+    @for (channel of channelGroup.channels; track $index){
         <chat-channel
-            [type]="channel.type"
-            [name]="channel.name"
+            [channel]="channel"
         />
     }
 </div>

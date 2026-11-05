@@ -27,16 +27,19 @@ export class ServerOverview {
                 {
                     name: 'voice 1',
                     type: 'voice',
+                    uid: '',
                     users: [],
                 },
                 {
                     name: 'voice 2',
                     type: 'voice',
+                    uid: '',
                     users: [],
                 },
                 {
                     name: 'voice 3',
                     type: 'voice',
+                    uid: '',
                     users: [],
                 },
             ],
@@ -48,16 +51,19 @@ export class ServerOverview {
                 {
                     name: 'text 1',
                     type: 'text',
+                    uid: '',
                     users: [],
                 },
                 {
                     name: 'text 2',
                     type: 'text',
+                    uid: '',
                     users: [],
                 },
                 {
                     name: 'text 3',
                     type: 'text',
+                    uid: '',
                     users: [],
                 },
             ],
