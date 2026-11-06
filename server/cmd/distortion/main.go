@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"server/internal/config"
 	"server/internal/logging"
+	"server/internal/server"
 )
 
 func main() {
@@ -15,12 +16,16 @@ func main() {
 	// logging setup
 	err := logging.ConfigureLogger(cfg.Logger)
 	if err != nil {
-		slog.Error("Error while configuring logger: ", "err", err)
+		log.Println("Error while configuring logger")
 		return
 	}
 	slog.Debug("Logger successfully configured")
+
 	// repository startup
 
 	// server start
-
+	err = server.ServerStartup(cfg.Server)
+	if err != nil {
+		return
+	}
 }
