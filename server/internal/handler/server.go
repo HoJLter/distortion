@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"log/slog"
@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
 )
 
 /*
@@ -38,15 +37,35 @@ import (
  *
  */
 
-func ServerStartup(cfg config.ServerConfig) error {
-	router := chi.NewRouter()
-	router.Use(middleware.Logger)
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, world!!"))
+func SlogLoggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		slog.Debug("HTTP request achieved",
+			"method", request.Method,
+			"url", request.URL.Path)
+
+		next.ServeHTTP(writer, request)
 	})
+}
+
+func RunServer(cfg config.ServerConfig) error {
+	rootRouter := chi.NewRouter()
+	rootRouter.Use(SlogLoggingMiddleware)
+
+	apiRouter := chi.NewRouter()
+	rootRouter.Mount("/api", apiRouter)
+
+	usersRouter := chi.NewRouter()
+	textChanRouter := chi.NewRouter()
+	voiceChanRouter := chi.NewRouter()
+	netRoutingRouter := chi.NewRouter()
+
+	apiRouter.Mount("/users", usersRouter)
+	apiRouter.Mount("/text-channels", textChanRouter)
+	apiRouter.Mount("/voice-channels", voiceChanRouter)
+	apiRouter.Mount("/routing", netRoutingRouter)
 
 	addressToListen := ":" + strconv.Itoa(cfg.Port)
-	err := http.ListenAndServe(addressToListen, router)
+	err := http.ListenAndServe(addressToListen, rootRouter)
 	if err != nil {
 		slog.Error("Server starting error", "err", err)
 		return err

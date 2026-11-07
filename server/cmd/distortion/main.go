@@ -4,8 +4,8 @@ import (
 	"log"
 	"log/slog"
 	"server/internal/config"
+	"server/internal/handler"
 	"server/internal/logging"
-	"server/internal/server"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 	// repository startup
 
 	// server start
-	err = server.ServerStartup(cfg.Server)
+	err = handler.RunServer(cfg.Server)
 	if err != nil {
 		return
 	}
