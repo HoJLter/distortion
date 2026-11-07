@@ -55,12 +55,10 @@ func RunServer(cfg config.ServerConfig) error {
 	rootRouter.Mount("/api", apiRouter)
 
 	usersRouter := chi.NewRouter()
-	textChanRouter := chi.NewRouter()
 	voiceChanRouter := chi.NewRouter()
 	netRoutingRouter := chi.NewRouter()
 
 	apiRouter.Mount("/users", usersRouter)
-	apiRouter.Mount("/text-channels", textChanRouter)
 	apiRouter.Mount("/voice-channels", voiceChanRouter)
 	apiRouter.Mount("/routing", netRoutingRouter)
 
