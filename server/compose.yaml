@@ -1,0 +1,19 @@
+services:
+  server:
+    build: .
+    ports:
+      - "21530:21530"
+    volumes:
+      - "./config.yaml:/app/config.yaml:ro"
+
+  database:
+    image: postgres
+    ports:
+      - "21531:5432"
+    environment:
+      POSTGRES_USER: messenger
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: messenger
+
+  redis:
+    image: redis:7

@@ -22,7 +22,15 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func createChannel(w http.ResponseWriter, r *http.Request) {
+func createTextChannel(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func createVoiceChannel(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func connectToVoiceChannel(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -35,12 +43,14 @@ func getChannels(w http.ResponseWriter, r *http.Request) {
 }
 
 func setupTextChanRouter(parentRouter chi.Router) {
-	textChanRouter := chi.NewRouter()
-	parentRouter.Mount("/text-channels", textChanRouter)
+	channelsRouter := chi.NewRouter()
+	parentRouter.Mount("/channels", channelsRouter)
 
-	parentRouter.Get("{channel_uid}/messages", getMessages)
-	parentRouter.Post("{channel_uid}/messages", postMessage)
-	parentRouter.Delete("/{channel_uid}", deleteChannel)
-	parentRouter.Post("/", createChannel)
-	parentRouter.Post("/", getChannels)
+	channelsRouter.Get("{channel_uid}/messages", getMessages)
+	channelsRouter.Post("{channel_uid}/messages", postMessage)
+
+	channelsRouter.Get("/", getChannels)
+	channelsRouter.Post("/", createTextChannel)
+	channelsRouter.Post("/", createVoiceChannel)
+	channelsRouter.Delete("/{channel_uid}", deleteChannel)
 }

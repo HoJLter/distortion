@@ -9,5 +9,5 @@ server:
   port: 21530
 
 database:
-  host: "localhost"
-  port: 21550
+  host: "database"
+  port: 2432
