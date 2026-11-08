@@ -6,6 +6,7 @@ import (
 	"server/internal/config"
 	"server/internal/handler"
 	"server/internal/logging"
+	"server/internal/repository"
 )
 
 func main() {
@@ -23,8 +24,15 @@ func main() {
 
 	// repository startup
 
+	db, err := repository.SetupDatabase(cfg.Database)
+	if err != nil {
+		return
+	}
+
+	h := handler.NewHandler(db)
+
 	// server start
-	err = handler.RunServer(cfg.Server)
+	err = handler.RunServer(cfg.Server, h)
 	if err != nil {
 		return
 	}

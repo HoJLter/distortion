@@ -47,20 +47,14 @@ func SlogLoggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func RunServer(cfg config.ServerConfig) error {
+func RunServer(cfg config.ServerConfig, h *Handler) error {
 	rootRouter := chi.NewRouter()
 	rootRouter.Use(SlogLoggingMiddleware)
 
 	apiRouter := chi.NewRouter()
 	rootRouter.Mount("/api", apiRouter)
 
-	usersRouter := chi.NewRouter()
-	voiceChanRouter := chi.NewRouter()
-	netRoutingRouter := chi.NewRouter()
-
-	apiRouter.Mount("/users", usersRouter)
-	apiRouter.Mount("/voice-channels", voiceChanRouter)
-	apiRouter.Mount("/routing", netRoutingRouter)
+	setupChannelsRouter(apiRouter, h)
 
 	addressToListen := ":" + strconv.Itoa(cfg.Port)
 	err := http.ListenAndServe(addressToListen, rootRouter)
