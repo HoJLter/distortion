@@ -15,7 +15,8 @@ const (
 
 type DatabaseConfig struct {
 	Host string `yaml:"host"`
-	Port uint16 `yaml:"port"`
+	Port int    `yaml:"port"`
+	Url  string `yaml:"url"`
 }
 
 type LoggingConfig struct {
