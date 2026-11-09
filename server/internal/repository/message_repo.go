@@ -23,10 +23,10 @@ type GetMessageResponse struct {
 	Content   string       `json:"content"`
 }
 
-type CreateMessageParams struct {
-	ChannelUID string
-	UserUID    string
-	Content    string
+type PostMessageParams struct {
+	ChannelUID string `json:"channel_uid"`
+	UserUID    string `json:"user_uid"`
+	Content    string `json:"content"`
 }
 
 type MessageRepository struct {
@@ -37,7 +37,7 @@ func NewMessageRepository(pool *pgxpool.Pool) *MessageRepository {
 	return &MessageRepository{pool: pool}
 }
 
-func (m MessageRepository) Create(ctx context.Context, message CreateMessageParams, userUID string) (int, error) {
+func (m MessageRepository) Post(ctx context.Context, message PostMessageParams) (int, error) {
 	row := m.pool.QueryRow(ctx,
 		`INSERT INTO messages (channel_uid, user_uid, content) VALUES ($1, $2, $3) RETURNING id`,
 		message.ChannelUID, message.UserUID, message.Content,
