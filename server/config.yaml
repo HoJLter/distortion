@@ -10,5 +10,5 @@ server:
 
 database:
   host: "database"
-  url: "messenger://messenger:dev_password@localhost:21531/messenger"
+  url: "postgres://messenger:dev_password@localhost:21531/messenger"
   port: 2432

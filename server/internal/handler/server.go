@@ -57,6 +57,7 @@ func RunServer(cfg config.ServerConfig, h *Handler) error {
 	setupChannelsRouter(apiRouter, h)
 
 	addressToListen := ":" + strconv.Itoa(cfg.Port)
+	slog.Debug("Address to listen is set", "address", addressToListen)
 	err := http.ListenAndServe(addressToListen, rootRouter)
 	if err != nil {
 		slog.Error("Server starting error", "err", err)

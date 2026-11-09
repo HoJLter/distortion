@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func SetupDatabase(cfg config.DatabaseConfig) (*pgxpool.Pool, error) {
+func SetupRepositories(cfg config.DatabaseConfig) (*pgxpool.Pool, error) {
 	ctx := context.Background()
 
 	db, err := pgxpool.New(ctx, cfg.Url)
@@ -16,7 +16,6 @@ func SetupDatabase(cfg config.DatabaseConfig) (*pgxpool.Pool, error) {
 		slog.Error("Error while db init", "err", err)
 		return nil, err
 	}
-	defer db.Close()
 
 	if err := db.Ping(ctx); err != nil {
 		slog.Error("Error while db ping", "err", err)

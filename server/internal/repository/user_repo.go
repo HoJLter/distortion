@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	UID        string
+	UserUID    string
 	Username   string
 	AvatarPath string
 }
@@ -22,8 +22,8 @@ func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
 
 func (u UserRepository) Create(ctx context.Context, user User) error {
 	_, err := u.pool.Exec(ctx,
-		`INSERT INTO users (uid, username, avatar_path) VALUES ($1, $2, $3)`,
-		user.UID, user.Username, user.AvatarPath,
+		`INSERT INTO users (uid, username, avatar_path) VALUES ($1, $2)`,
+		user.Username, user.AvatarPath,
 	)
 	if err != nil {
 		return err

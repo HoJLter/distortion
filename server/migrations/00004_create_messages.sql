@@ -10,5 +10,10 @@ ADD CONSTRAINT fk_channel_uid
 FOREIGN KEY (channel_uid)
 REFERENCES channels(uid);
 
+ALTER TABLE messages
+ADD CONSTRAINT fk_user_uid
+FOREIGN KEY (user_uid)
+REFERENCES users(uid);
+
 -- +goose Down
 DROP TABLE IF EXISTS messages;

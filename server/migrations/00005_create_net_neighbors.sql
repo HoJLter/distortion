@@ -5,4 +5,4 @@ CREATE TABLE net_neighbors(
      node_ip TEXT NOT NULL
 );
 -- +goose Down
-DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS net_neighbors;

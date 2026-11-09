@@ -24,10 +24,12 @@ func main() {
 
 	// repository startup
 
-	db, err := repository.SetupDatabase(cfg.Database)
+	db, err := repository.SetupRepositories(cfg.Database)
 	if err != nil {
 		return
 	}
+	defer db.Close()
+	slog.Debug("Repository setup success")
 
 	h := handler.NewHandler(db)
 
