@@ -1,37 +1,29 @@
 import { effect, inject, Service, signal } from '@angular/core';
-import { ChannelGroupModel, ChannelModel, MessageViewModel } from '../models';
 import {HttpClient} from "@angular/common/http";
-import {PostMessageDTO} from "../dto-models";
+import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models';
+import { MessageModel } from '../data/models/message.models';
+import { ChatApiService } from './chat-api-service';
+import { mapMessage } from '../data/mappers';
+import { UserService } from './user-service';
 
 @Service()
 export class ChatManager {
     public selectedTextChannelUID = signal<string>('');
     public selectedVoiceChannelUID = signal<string>('');
 
-    // private serverIP: string = 'localhost:21530';
-    private serverIP: string = '';
-    private httpClient = inject(HttpClient);
+    private chatApiService = inject(ChatApiService);
+    private userService = inject(UserService);
 
-    getMessages(channelUID: string): MessageViewModel[] {
-        let messages: MessageViewModel[] = [];
-        this.httpClient
-            .get(`${this.serverIP}/api/channels/${channelUID}/messages`)
-            .subscribe((response) => {
-                console.log(response);
-            });
-
-        return messages;
+    getMessages(channelUID: string): MessageModel[] {
+        let dtoMessages: GetMessageDTO[] = this.chatApiService.getMessages(channelUID);
+        return dtoMessages.map((dtoMsg) => mapMessage(dtoMsg));
     }
 
-    sendMessage(channelUID: string, message: PostMessageDTO) {
-        console.log(message)
-        console.log(JSON.stringify(message));
-        this.C.update((list) => [...list, created]);
-
-        this.httpClient
-            .post(`${this.serverIP}/api/channels/${channelUID}/messages`, JSON.stringify(message))
-            .subscribe((response) => {
-                console.log(response);
-            });
+    sendMessage(channelUID: string, message: string): void {
+        let dtoMessage: PostMessageDTO = {
+            user_uid: this.userService.getUID(),
+            content: message,
+        };
+        this.chatApiService.sendMessage(channelUID, dtoMessage);
     }
 }
