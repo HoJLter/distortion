@@ -3,13 +3,13 @@ export interface MemberModel {
     username: string;
 }
 
-export interface UserModel {
+export interface UserViewModel {
     name: string;
 }
 
-export interface MessageModel {
-    user: UserModel;
-    msg: string;
+export interface MessageViewModel {
+    user: UserViewModel;
+    content: string;
 }
 
 export interface ServerNavModel {
@@ -17,7 +17,6 @@ export interface ServerNavModel {
 }
 
 export interface ChannelModel {
-    name: string;
     uid: string;
     type: string;
     users: MemberModel[];
