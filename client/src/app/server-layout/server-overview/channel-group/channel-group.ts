@@ -1,6 +1,6 @@
 import { Component, Input, output } from '@angular/core';
 import { ChatChannel } from './chat-channel/chat-channel';
-import { ChannelGroupModel, ChannelModel } from '../../../shared/models';
+import {ChannelGroupModel} from '../../../shared/data/models/channel.models';
 
 
 @Component({

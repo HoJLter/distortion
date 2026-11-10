@@ -1,6 +1,13 @@
 <div class="container">
-    <input type="text" placeholder="Type into #{{chatManager.selectedTextChannel()?.name ?? 'choose the channel'}}">
-    <button class="pin-button">
+    <input type="text"
+           placeholder="Type into #{{
+           chatManager.selectedTextChannelUID() == '' ?
+            'choose the channel' :
+            chatManager.selectedTextChannelUID}}"
+           [formControl]="chatInput"
+           (keydown.enter)="sendMessage()"
+    >
+<!--    <button class="pin-button">-->
 
-    </button>
+<!--    </button>-->
 </div>

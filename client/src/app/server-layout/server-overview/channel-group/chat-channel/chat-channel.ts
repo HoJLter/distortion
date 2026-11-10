@@ -1,6 +1,6 @@
 import { Component, inject, Input, output } from '@angular/core';
-import { ChannelModel } from '../../../../shared/models';
 import { ChatManager } from '../../../../shared/services/chat-manager';
+import {ChannelModel} from '../../../../shared/data/models/channel.models';
 
 @Component({
     imports: [],
@@ -15,10 +15,10 @@ export class ChatChannel {
 
     selectChannel(){
         if (this.channel.type == "text"){
-            this.chatManager.selectedTextChannel.set(this.channel);
+            this.chatManager.selectedTextChannelUID.set(this.channel.uid);
         }
         else {
-            this.chatManager.selectedVoiceChannel.set(this.channel);
+            this.chatManager.selectedVoiceChannelUID.set(this.channel.uid);
         }
     }
 }

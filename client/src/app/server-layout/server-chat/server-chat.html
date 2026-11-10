@@ -1,12 +1,12 @@
 
 <chat-header
-    [header]="selectedChannel?.name ?? 'choose the channel'"
+    [header]="chatManager.selectedTextChannelUID() ?? 'choose the channel'"
 />
 <div class="messages">
     @for (message of chatMessages(); track $index){
         <message
-            [user]="message.user"
-            [message]="message.msg"
+            [user]="message.author"
+            [message]="message.content"
         />
     }
 </div>

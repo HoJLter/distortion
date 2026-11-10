@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { ServerNavItemModel } from '../data/models/server.models';
 import { ServerNavItem } from './server-nav-item/server-nav-item';
-import { ServerNavModel } from '../models';
 
 
 @Component({
@@ -10,5 +10,5 @@ import { ServerNavModel } from '../models';
     templateUrl: './servers-sidebar.html',
 })
 export class ServersSidebar {
-    @Input() servers: ServerNavModel[] = [];
+    @Input() servers: ServerNavItemModel[] = [];
 }

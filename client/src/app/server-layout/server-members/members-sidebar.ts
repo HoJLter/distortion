@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MemberGroup } from './member-group/member-group';
-import { MemberGroupModel } from '../../shared/models';
+import { UserGroupModel } from '../../shared/data/models/user.models';
 
 
 @Component({
@@ -10,10 +10,10 @@ import { MemberGroupModel } from '../../shared/models';
     templateUrl: './members-sidebar.html',
 })
 export class MembersSidebar {
-    @Input() groups: MemberGroupModel[] = [
+    @Input() groups: UserGroupModel[] = [
         {
             name: 'online',
-            members: [
+            users: [
                 {
                     username: 'hojlter',
                 },
@@ -33,7 +33,7 @@ export class MembersSidebar {
         },
         {
             name: 'offline',
-            members: [
+            users: [
                 {
                     username: 'megalul',
                 },

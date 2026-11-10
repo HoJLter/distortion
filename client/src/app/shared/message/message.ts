@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UserModel } from '../models';
+import { UserModel } from '../data/models/user.models';
 
 @Component({
     imports: [],
@@ -9,7 +9,7 @@ import { UserModel } from '../models';
 })
 export class Message {
     @Input() user: UserModel = {
-        name: "Undefined user"
+        username: "Undefined user"
     };
     @Input() message: string = 'Undefined message';
 }

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Member } from '../../../shared/member/member';
-import { MemberModel } from '../../../shared/models';
+import { UserGroupModel } from '../../../shared/data/models/user.models';
 
 @Component({
     imports: [Member],
@@ -10,5 +10,8 @@ import { MemberModel } from '../../../shared/models';
 })
 export class MemberGroup {
     @Input() name: string = 'Header';
-    @Input() members: MemberModel[] = [];
+    @Input() usersGroup: UserGroupModel = {
+        name: "undefined",
+        users: []
+    };
 }
