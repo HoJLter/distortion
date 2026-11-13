@@ -55,6 +55,7 @@ func RunServer(cfg config.ServerConfig, h *Handler) error {
 	rootRouter.Mount("/api", apiRouter)
 
 	setupChannelsRouter(apiRouter, h)
+	setupWsRouter(apiRouter, h)
 
 	addressToListen := ":" + strconv.Itoa(cfg.Port)
 	slog.Debug("Address to listen is set", "address", addressToListen)
