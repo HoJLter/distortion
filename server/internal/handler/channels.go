@@ -2,12 +2,15 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"log/slog"
 	"net/http"
 	"server/internal/repository"
+	"strconv"
 
 	"github.com/go-chi/chi"
+	"github.com/go-playground/validator/v10"
 )
 
 /*
@@ -18,40 +21,75 @@ import (
 * DELETE /api/channels/{channel_uid} - удалить канал
  */
 
+// VALIDATION
+
+type ValidationError struct {
+	Field string `json:"field"`
+	Tag   string `json:"tag"`
+	Param any    `json:"param"`
+}
+
+func validateStruct(structToValidate any) []ValidationError {
+	validate := validator.New()
+
+	var structuredErrors []ValidationError
+
+	if err := validate.Struct(structToValidate); err != nil {
+		var validationErrors validator.ValidationErrors
+		if errors.As(err, &validationErrors) {
+			for _, e := range validationErrors {
+				structuredErrors = append(structuredErrors, ValidationError{
+					Field: e.Field(),
+					Tag:   e.Tag(),
+					Param: e.Param(),
+				})
+			}
+		}
+	}
+	return structuredErrors
+}
+
+// VALIDATION END
+
+// HANDLERS
+
 func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 	channelUID := chi.URLParam(r, "channel_uid")
-	messages, err := h.messages.GetMessagesForChannel(r.Context(), channelUID)
+	offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
+	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+	if err != nil {
+		slog.Error("getMessages() query params failed to fetch", "err", err, "channelUID", channelUID)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	messages, err := h.messages.GetMessagesForChannel(r.Context(), channelUID, offset, limit)
 	if err != nil {
 		slog.Error("getMessages() error", "err", err, "channelUID", channelUID)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	slog.Debug("Acquired messages: ", "messages", messages)
-	for _, message := range messages {
-		marsh, err := json.Marshal(message)
-		if err != nil {
-			slog.Error("getMessages() marshalling error", "err", err, "message", message)
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		_, err = w.Write(marsh)
-		if err != nil {
-			slog.Error("getMessages() writing response error", "err", err)
-			http.Error(w, err.Error(), http.StatusBadRequest)
-		}
+
+	w.Header().Set("Content-Type", "appcilation/json")
+
+	if err := json.NewEncoder(w).Encode(messages); err != nil {
+		slog.Error("getMessages() encoding error")
 	}
 }
 
 /*
-	SCHEMA:
+SCHEMA:
+
 	{
-		channel_uid: string,
 		user_uid: string,
 		content: string
 	}
 */
-
 func (h Handler) postMessage(w http.ResponseWriter, r *http.Request) {
+	type request struct {
+		UserUID string `json:"user_uid" validate:"required"`
+		Content string `json:"content" validate:"required"`
+	}
 	type PostMessageResponse struct {
 		MessageID int `json:"message_id"`
 	}
@@ -63,15 +101,29 @@ func (h Handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var postMessageData repository.PostMessageParams
-	err = json.Unmarshal(data, &postMessageData)
+	var unmarshalledData request
+	err = json.Unmarshal(data, &unmarshalledData)
 	if err != nil {
 		slog.Error("Invalid json", "err", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	messageID, err := h.messages.Post(r.Context(), postMessageData)
+	// validateErrors := validateStruct(data)
+	// if len(validateErrors) != 0 {
+	//	for valErr := range validateErrors {
+	//
+	//	}
+	//	return
+	//}
+
+	postMessageParams := repository.PostMessageParams{
+		ChannelUID: chi.URLParam(r, "channel_uid"),
+		UserUID:    unmarshalledData.UserUID,
+		Content:    unmarshalledData.Content,
+	}
+	slog.Debug("Unmasrhalled struct", "struct:", postMessageParams)
+	messageID, err := h.messages.Post(r.Context(), postMessageParams)
 	if err != nil {
 		slog.Error("Post() error", "err", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)

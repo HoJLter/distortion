@@ -1,0 +1,7 @@
+<div class="messages">
+    @for (message of chatMessages(); track message.id){
+        <message
+            [message]="message"
+        />
+    }
+</div>

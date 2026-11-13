@@ -12,21 +12,22 @@ type Message struct {
 	Content       string
 }
 
-type MessageAutor struct {
+type MessageAuthor struct {
 	UID        string  `json:"uid"`
 	Username   string  `json:"username"`
 	AvatarPath *string `json:"avatar_path"`
 }
+
 type GetMessageResponse struct {
-	MessageID int          `json:"message_id"`
-	Author    MessageAutor `json:"author"`
-	Content   string       `json:"content"`
+	MessageID int           `json:"message_id"`
+	Author    MessageAuthor `json:"author"`
+	Content   string        `json:"content"`
 }
 
 type PostMessageParams struct {
-	ChannelUID string `json:"channel_uid"`
-	UserUID    string `json:"user_uid"`
-	Content    string `json:"content"`
+	ChannelUID string
+	UserUID    string
+	Content    string
 }
 
 type MessageRepository struct {
@@ -66,7 +67,12 @@ func (m MessageRepository) Delete(
 	return nil
 }
 
-func (m MessageRepository) GetMessagesForChannel(ctx context.Context, channelUID string) ([]GetMessageResponse, error) {
+func (m MessageRepository) GetMessagesForChannel(
+	ctx context.Context,
+	channelUID string,
+	offset int,
+	limit int,
+) ([]GetMessageResponse, error) {
 	rows, err := m.pool.Query(ctx,
 		`SELECT 
     			messages.id,
@@ -77,8 +83,10 @@ func (m MessageRepository) GetMessagesForChannel(ctx context.Context, channelUID
 			from messages 
 			inner join users 
 			on messages.user_uid = users.uid
-			where messages.channel_uid = $1;`,
-		channelUID,
+			where messages.channel_uid = $1
+			order by id
+			limit $2 offset $3;`,
+		channelUID, limit, offset,
 	)
 	if err != nil {
 		return nil, err

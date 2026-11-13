@@ -15,10 +15,10 @@ export class ChatChannel {
 
     selectChannel(){
         if (this.channel.type == "text"){
-            this.chatManager.selectedTextChannelUID.set(this.channel.uid);
+            this.chatManager.selectTextChannel(this.channel.uid);
         }
         else {
-            this.chatManager.selectedVoiceChannelUID.set(this.channel.uid);
+            // this.chatManager.selectedVoiceChannelUID.set(this.channel.uid);
         }
     }
 }

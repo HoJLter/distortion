@@ -4,18 +4,13 @@ import { ChatHeader } from './chat-header/chat-header';
 import { ChatManager } from '../../shared/services/chat-manager';
 import {MessageModel} from '../../shared/data/models/message.models';
 import {Message} from '../../shared/message/message';
+import { ChatMessages } from './chat-messages/chat-messages';
 
 
 @Component({
-    imports: [ChatInput, Message, ChatHeader],
+    imports: [ChatInput, ChatHeader, ChatMessages],
     selector: 'server-chat',
     styleUrl: './server-chat.css',
     templateUrl: './server-chat.html',
 })
-export class ServerChat {
-    chatManager = inject(ChatManager);
-
-    chatMessages = computed<MessageModel[]>((): MessageModel[] => {
-        return this.chatManager.getMessages(this.chatManager.selectedTextChannelUID());
-    });
-}
+export class ServerChat {}

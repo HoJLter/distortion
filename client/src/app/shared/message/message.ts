@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UserModel } from '../data/models/user.models';
+import { MessageModel } from '../data/models/message.models';
 
 @Component({
     imports: [],
@@ -8,8 +8,12 @@ import { UserModel } from '../data/models/user.models';
     templateUrl: './message.html',
 })
 export class Message {
-    @Input() user: UserModel = {
-        username: "Undefined user"
+    @Input() message: MessageModel = {
+        id: -1,
+        author: {
+            username: 'undefined author',
+            avatarPath: '',
+        },
+        content: 'undefined content',
     };
-    @Input() message: string = 'Undefined message';
 }

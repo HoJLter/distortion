@@ -52,16 +52,19 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "ordox:build:production"
+            "builder": "@angular/build:dev-server",
+            "options": {
+                "proxyConfig": "proxy.conf.json"
             },
-            "development": {
-              "buildTarget": "ordox:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
+            "configurations": {
+                "production": {
+                    "buildTarget": "ordox:build:production"
+                },
+                "development": {
+                    "buildTarget": "ordox:build:development"
+                }
+            },
+            "defaultConfiguration": "development"
         },
         "test": {
           "builder": "@angular/build:unit-test"

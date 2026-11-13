@@ -7,7 +7,7 @@ export interface MessageAuthorDTO {
 }
 
 export interface GetMessageDTO {
-    message_id: string;
+    message_id: number;
     author: MessageAuthorDTO;
     content: string;
 }

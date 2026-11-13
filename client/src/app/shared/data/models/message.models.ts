@@ -6,6 +6,7 @@ export interface MessageAuthorModel {
 }
 
 export interface MessageModel{
+    id: number;
     author: MessageAuthorModel;
     content: string;
 }

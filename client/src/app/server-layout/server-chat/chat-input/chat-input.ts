@@ -11,21 +11,17 @@ import {PostMessageDTO} from '../../../shared/data/dto-models/message.models';
     templateUrl: './chat-input.html',
 })
 export class ChatInput {
-    @Output() messageChange = new EventEmitter();
     chatManager: ChatManager = inject(ChatManager);
-    userService = inject(UserService);
-
     chatInput: FormControl = new FormControl();
 
     sendMessage() {
-        let channelUID = this.chatManager.selectedTextChannelUID();
+        let channelUID = this.chatManager.selectedTextChannel();
         if (channelUID == '') {
             alert('Choose the channel to send the message!');
             return;
         }
 
         this.chatManager.sendMessage(channelUID, this.chatInput.value);
-        this.messageChange.emit();
         this.chatInput.reset();
     }
 }

@@ -1,29 +1,51 @@
 import { effect, inject, Service, signal } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models';
 import { MessageModel } from '../data/models/message.models';
-import { ChatApiService } from './chat-api-service';
+import { DbApiService } from './db-api-service';
+import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models';
 import { mapMessage } from '../data/mappers';
+import { finalize, map } from 'rxjs';
 import { UserService } from './user-service';
+
 
 @Service()
 export class ChatManager {
-    public selectedTextChannelUID = signal<string>('');
-    public selectedVoiceChannelUID = signal<string>('');
+    messages = signal<MessageModel[]>([]);
+    isLoading = signal<boolean>(false);
 
-    private chatApiService = inject(ChatApiService);
-    private userService = inject(UserService);
+    selectedTextChannel = signal<string>("undefined")
 
-    getMessages(channelUID: string): MessageModel[] {
-        let dtoMessages: GetMessageDTO[] = this.chatApiService.getMessages(channelUID);
-        return dtoMessages.map((dtoMsg) => mapMessage(dtoMsg));
+    userService: UserService = inject(UserService);
+    dbApi: DbApiService = inject(DbApiService);
+
+    selectTextChannel(channelUID: string){
+        this.selectedTextChannel.set(channelUID);
+        this.messages.set([]);
+        this.loadMessages(this.selectedTextChannel(), 0, 50);
     }
 
+    loadMessages(channelUID: string, offset: number, limit: number) {
+        if (this.isLoading()) {
+            return;
+        }
+        this.isLoading.set(true);
+
+        this.dbApi.getMessages(channelUID, offset, limit)
+            .pipe(
+                map((dto => dto.map(mapMessage))),
+                finalize(() => this.isLoading.set(false))
+            )
+            .subscribe((newMessages: MessageModel[]) => {
+            this.messages.update((currentMessages) => [...newMessages, ...currentMessages] );
+        });
+    }
+
+    // необходимо вебсокетом ловить и это получение сообщения
     sendMessage(channelUID: string, message: string): void {
         let dtoMessage: PostMessageDTO = {
             user_uid: this.userService.getUID(),
             content: message,
         };
-        this.chatApiService.sendMessage(channelUID, dtoMessage);
+
+        this.dbApi.sendMessage(channelUID, dtoMessage)
     }
 }

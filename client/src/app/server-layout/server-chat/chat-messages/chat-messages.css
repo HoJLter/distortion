@@ -1,0 +1,12 @@
+:host{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--message-external-gap);
+
+
+    overflow-y: auto;
+    scroll-behavior: smooth;
+
+    padding: 30px 130px;
+}

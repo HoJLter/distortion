@@ -4,6 +4,7 @@ import { Service } from '@angular/core';
 export class UserService {
     private username: string = 'HoJLter';
     private uid: string = '6cefb5';
+    private avatarPath: string = "/"
 
     public getUsername() {
         return this.username;
@@ -11,5 +12,9 @@ export class UserService {
 
     public getUID() {
         return this.uid;
+    }
+
+    public getAvatarPath() {
+        return this.avatarPath;
     }
 }
