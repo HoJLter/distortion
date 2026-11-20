@@ -4,52 +4,83 @@ import (
 	"context"
 	"log/slog"
 	"server/internal/repository"
+	"time"
 
 	"github.com/coder/websocket"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type wsRawMessageDTO struct {
-	ctx  context.Context
 	typ  websocket.MessageType
 	data []byte
 }
-type Hub struct {
-	connections map[*websocket.Conn]struct{}
 
-	subscribe   chan *websocket.Conn
-	unsubscribe chan *websocket.Conn
+type WsClient struct {
+	ctx      context.Context
+	conn     *websocket.Conn
+	messages chan wsRawMessageDTO
+}
+
+func NewWsClient(ctx context.Context, conn *websocket.Conn) *WsClient {
+	return &WsClient{
+		ctx:      ctx,
+		conn:     conn,
+		messages: make(chan wsRawMessageDTO, 64),
+	}
+}
+
+func (w *WsClient) Listen() {
+	for {
+		select {
+		case msg := <-w.messages:
+			{
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				if err := w.conn.Write(ctx, msg.typ, msg.data); err != nil {
+					slog.Warn("Message to client is not transferred")
+				}
+				cancel()
+			}
+		case <-w.ctx.Done():
+			return
+		}
+	}
+}
+
+type Hub struct {
+	wsClients map[*WsClient]struct{}
+
+	subscribe   chan *WsClient
+	unsubscribe chan *WsClient
 
 	broadcast chan wsRawMessageDTO
 }
 
 func NewHub() *Hub {
 	return &Hub{
-		connections: make(map[*websocket.Conn]struct{}, 0),
-		subscribe:   make(chan *websocket.Conn),
-		unsubscribe: make(chan *websocket.Conn),
+		wsClients:   make(map[*WsClient]struct{}),
+		subscribe:   make(chan *WsClient),
+		unsubscribe: make(chan *WsClient),
 		broadcast:   make(chan wsRawMessageDTO),
-	}
-}
-
-func sendMessageToConn(conn *websocket.Conn, msg *wsRawMessageDTO) {
-	if err := conn.Write(msg.ctx, msg.typ, msg.data); err != nil {
-		slog.Warn("Message to client is not transferred")
 	}
 }
 
 func (h *Hub) Run() {
 	for {
 		select {
-		case conn := <-h.subscribe:
-			h.connections[conn] = struct{}{}
-		case conn := <-h.unsubscribe:
+		case client := <-h.subscribe:
+			h.wsClients[client] = struct{}{}
+			go client.Listen()
+		case client := <-h.unsubscribe:
 			{
-				delete(h.connections, conn)
+				delete(h.wsClients, client)
 			}
 		case msg := <-h.broadcast:
-			for conn, _ := range h.connections {
-				go sendMessageToConn(conn, &msg)
+			for client := range h.wsClients {
+				select {
+				case client.messages <- msg:
+				default:
+					slog.Error("Client message buffer is full")
+				}
 			}
 		}
 	}

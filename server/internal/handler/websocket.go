@@ -26,10 +26,12 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.CloseNow()
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	h.hub.subscribe <- conn
-	defer func() { h.hub.unsubscribe <- conn }()
+	client := NewWsClient(ctx, conn)
+	h.hub.subscribe <- client
+	defer func() { h.hub.unsubscribe <- client }()
 
 	for {
 		typ, data, err := conn.Read(ctx)
@@ -62,7 +64,6 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 		slog.Debug("Message transfer to database completed")
 
 		h.hub.broadcast <- wsRawMessageDTO{
-			ctx:  ctx,
 			typ:  typ,
 			data: data,
 		}
