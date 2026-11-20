@@ -85,14 +85,15 @@ SCHEMA:
 		content: string
 	}
 */
+type postMessageDTO struct {
+	UserUID string `json:"user_uid" validate:"required"`
+	Content string `json:"content" validate:"required"`
+}
+type postMessageResponseDTO struct {
+	MessageID int `json:"message_id"`
+}
+
 func (h Handler) postMessage(w http.ResponseWriter, r *http.Request) {
-	type request struct {
-		UserUID string `json:"user_uid" validate:"required"`
-		Content string `json:"content" validate:"required"`
-	}
-	type PostMessageResponse struct {
-		MessageID int `json:"message_id"`
-	}
 
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -101,7 +102,7 @@ func (h Handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var unmarshalledData request
+	var unmarshalledData postMessageDTO
 	err = json.Unmarshal(data, &unmarshalledData)
 	if err != nil {
 		slog.Error("Invalid json", "err", err)
@@ -130,7 +131,7 @@ func (h Handler) postMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := json.Marshal(PostMessageResponse{MessageID: messageID})
+	resp, err := json.Marshal(postMessageResponseDTO{MessageID: messageID})
 	if err != nil {
 		slog.Error("Marshal() error", "err", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
