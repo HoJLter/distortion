@@ -4,36 +4,54 @@ import (
 	"context"
 	"log/slog"
 	"server/internal/repository"
-	"slices"
 
 	"github.com/coder/websocket"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type wsRawMessageDTO struct {
+	ctx  context.Context
+	typ  websocket.MessageType
+	data []byte
+}
 type Hub struct {
-	connections []*websocket.Conn
+	connections map[*websocket.Conn]struct{}
+
+	subscribe   chan *websocket.Conn
+	unsubscribe chan *websocket.Conn
+
+	broadcast chan wsRawMessageDTO
 }
 
-func (h *Hub) subscribe(conn *websocket.Conn) {
-	h.connections = append(h.connections, conn)
-}
-
-func (h *Hub) unsubscribe(connToUnsub *websocket.Conn) {
-	for i, conn := range h.connections {
-		if conn == connToUnsub {
-			h.connections = slices.Delete(h.connections, i, i+1)
-			return
-		}
+func NewHub() *Hub {
+	return &Hub{
+		connections: make(map[*websocket.Conn]struct{}, 0),
+		subscribe:   make(chan *websocket.Conn),
+		unsubscribe: make(chan *websocket.Conn),
+		broadcast:   make(chan wsRawMessageDTO),
 	}
 }
 
-func (h *Hub) broadcast(ctx context.Context, messageType websocket.MessageType, message []byte) {
-	for _, conn := range h.connections {
+func sendMessageToConn(conn *websocket.Conn, msg *wsRawMessageDTO) {
+	if err := conn.Write(msg.ctx, msg.typ, msg.data); err != nil {
+		slog.Warn("Message to client is not transferred")
+	}
+}
 
-		if err := conn.Write(ctx, messageType, message); err != nil {
-			slog.Error("Message cannot be transferred to client", "conn", conn)
+func (h *Hub) Run() {
+	for {
+		select {
+		case conn := <-h.subscribe:
+			h.connections[conn] = struct{}{}
+		case conn := <-h.unsubscribe:
+			{
+				delete(h.connections, conn)
+			}
+		case msg := <-h.broadcast:
+			for conn, _ := range h.connections {
+				go sendMessageToConn(conn, &msg)
+			}
 		}
-		slog.Debug("Message has been sent to the client")
 	}
 }
 
@@ -49,8 +67,6 @@ func NewHandler(pool *pgxpool.Pool) *Handler {
 		channels: repository.NewChannelRepository(pool),
 		users:    repository.NewUserRepository(pool),
 		messages: repository.NewMessageRepository(pool),
-		hub: &Hub{
-			connections: make([]*websocket.Conn, 0),
-		},
+		hub:      NewHub(),
 	}
 }

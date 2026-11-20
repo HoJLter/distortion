@@ -28,16 +28,18 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
 
-	h.hub.subscribe(conn)
-	defer h.hub.unsubscribe(conn)
+	h.hub.subscribe <- conn
+	defer func() { h.hub.unsubscribe <- conn }()
 
 	for {
 		typ, data, err := conn.Read(ctx)
 		if err != nil {
-			if websocket.CloseStatus(err) == websocket.StatusAbnormalClosure {
-				return
+			status := websocket.CloseStatus(err)
+			if status != websocket.StatusNormalClosure &&
+				status != websocket.StatusGoingAway {
+				slog.Error("ws read error", "err", err)
 			}
-			slog.Error("ws read error", "err", err)
+			return
 		}
 
 		var message wsPostMessageDTO
@@ -59,11 +61,17 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 		}
 		slog.Debug("Message transfer to database completed")
 
-		h.hub.broadcast(ctx, typ, data)
+		h.hub.broadcast <- wsRawMessageDTO{
+			ctx:  ctx,
+			typ:  typ,
+			data: data,
+		}
 	}
 }
 
 func setupWsRouter(parentRouter chi.Router, h *Handler) {
+	go h.hub.Run()
+
 	wsRouter := chi.NewRouter()
 	parentRouter.Mount("/ws", wsRouter)
 

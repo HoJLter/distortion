@@ -23,7 +23,6 @@ func main() {
 	slog.Debug("Logger successfully configured")
 
 	// repository startup
-
 	db, err := repository.SetupRepositories(cfg.Database)
 	if err != nil {
 		return
@@ -31,9 +30,8 @@ func main() {
 	defer db.Close()
 	slog.Debug("Repository setup success")
 
-	h := handler.NewHandler(db)
-
 	// server start
+	h := handler.NewHandler(db)
 	err = handler.RunServer(cfg.Server, h)
 	if err != nil {
 		return
