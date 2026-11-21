@@ -5,6 +5,8 @@ import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models
 import { mapMessage } from '../data/mappers';
 import { finalize, map } from 'rxjs';
 import { UserService } from './user-service';
+import { WebsocketService } from './websocket-service';
+import { HttpClient } from '@angular/common/http';
 
 
 @Service()
@@ -15,7 +17,12 @@ export class ChatManager {
     selectedTextChannel = signal<string>("undefined")
 
     userService: UserService = inject(UserService);
+    websocketService = inject(WebsocketService);
     dbApi: DbApiService = inject(DbApiService);
+
+    constructor(){
+        this.websocketService.subscribe(this.messages);
+    }
 
     selectTextChannel(channelUID: string){
         this.selectedTextChannel.set(channelUID);
@@ -42,10 +49,11 @@ export class ChatManager {
     // необходимо вебсокетом ловить и это получение сообщения
     sendMessage(channelUID: string, message: string): void {
         let dtoMessage: PostMessageDTO = {
+            channel_uid: channelUID,
             user_uid: this.userService.getUID(),
             content: message,
         };
-
-        this.dbApi.sendMessage(channelUID, dtoMessage)
+        console.log(dtoMessage);
+        this.websocketService.sendMessage(dtoMessage);
     }
 }

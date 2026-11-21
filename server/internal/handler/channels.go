@@ -68,7 +68,6 @@ func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	slog.Debug("Acquired messages: ", "messages", messages)
 
 	w.Header().Set("Content-Type", "appcilation/json")
 

@@ -19,12 +19,15 @@ type wsPostMessageDTO struct {
 
 func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 
-	conn, err := websocket.Accept(w, r, nil)
+	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+		InsecureSkipVerify: true,
+	})
 	if err != nil {
 		slog.Error("Websocket upgrade failed", "err", err)
 		return
 	}
 	defer conn.CloseNow()
+	slog.Debug("Websocket upgrade completed")
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

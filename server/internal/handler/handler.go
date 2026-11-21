@@ -76,6 +76,7 @@ func (h *Hub) Run() {
 			}
 		case msg := <-h.broadcast:
 			for client := range h.wsClients {
+				slog.Debug("Message transferred to client")
 				select {
 				case client.messages <- msg:
 				default:
