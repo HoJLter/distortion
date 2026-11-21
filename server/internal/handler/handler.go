@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
 	"log/slog"
 	"server/internal/repository"
 	"time"
@@ -10,22 +11,17 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type wsRawMessageDTO struct {
-	typ  websocket.MessageType
-	data []byte
-}
-
 type WsClient struct {
 	ctx      context.Context
 	conn     *websocket.Conn
-	messages chan wsRawMessageDTO
+	messages chan WSMessageDTO
 }
 
 func NewWsClient(ctx context.Context, conn *websocket.Conn) *WsClient {
 	return &WsClient{
 		ctx:      ctx,
 		conn:     conn,
-		messages: make(chan wsRawMessageDTO, 64),
+		messages: make(chan WSMessageDTO, 64),
 	}
 }
 
@@ -35,7 +31,13 @@ func (w *WsClient) Listen() {
 		case msg := <-w.messages:
 			{
 				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-				if err := w.conn.Write(ctx, msg.typ, msg.data); err != nil {
+
+				data, err := json.Marshal(msg)
+				if err != nil {
+					slog.Error("Error while marshalling for client")
+				}
+
+				if err := w.conn.Write(ctx, websocket.MessageText, data); err != nil {
 					slog.Warn("Message to client is not transferred")
 				}
 				cancel()
@@ -52,7 +54,7 @@ type Hub struct {
 	subscribe   chan *WsClient
 	unsubscribe chan *WsClient
 
-	broadcast chan wsRawMessageDTO
+	broadcast chan WSMessageDTO
 }
 
 func NewHub() *Hub {
@@ -60,7 +62,7 @@ func NewHub() *Hub {
 		wsClients:   make(map[*WsClient]struct{}),
 		subscribe:   make(chan *WsClient),
 		unsubscribe: make(chan *WsClient),
-		broadcast:   make(chan wsRawMessageDTO),
+		broadcast:   make(chan WSMessageDTO),
 	}
 }
 

@@ -11,11 +11,10 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type wsPostMessageDTO struct {
-	ChannelUID string `json:"channel_uid"`
-	UserUID    string `json:"user_uid"`
-	Content    string `json:"content"`
-}
+const (
+	postMessageType      = "postMessage"
+	broadcastMessageType = "broadcastMessage"
+)
 
 func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 
@@ -37,7 +36,7 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 	defer func() { h.hub.unsubscribe <- client }()
 
 	for {
-		typ, data, err := conn.Read(ctx)
+		_, data, err := conn.Read(ctx)
 		if err != nil {
 			status := websocket.CloseStatus(err)
 			if status != websocket.StatusNormalClosure &&
@@ -47,18 +46,18 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var message wsPostMessageDTO
-		err = json.Unmarshal(data, &message)
+		var acqMessage WSPostMessageDTO
+		err = json.Unmarshal(data, &acqMessage)
 		if err != nil {
 			slog.Error("Unmarshalling error", "err", err)
 			return
 		}
-		slog.Debug("Message unmarshalled", "msg", message)
+		slog.Debug("Message unmarshalled", "msg", acqMessage)
 
-		_, err = h.messages.Post(ctx, repository.PostMessageParams{
-			ChannelUID: message.ChannelUID,
-			UserUID:    message.UserUID,
-			Content:    message.Content,
+		messageRecord, err := h.messages.Post(ctx, repository.PostMessageParams{
+			ChannelUID: acqMessage.ChannelUID,
+			UserUID:    acqMessage.UserUID,
+			Content:    acqMessage.Content,
 		})
 		if err != nil {
 			slog.Error("Database transfer failed", "err", err)
@@ -66,9 +65,16 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 		}
 		slog.Debug("Message transfer to database completed")
 
-		h.hub.broadcast <- wsRawMessageDTO{
-			typ:  typ,
-			data: data,
+		message := RecordToMessageDTO(messageRecord)
+		payload, err := json.Marshal(message)
+		if err != nil {
+			slog.Error("Marshalling after mapping is failed")
+			return
+		}
+
+		h.hub.broadcast <- WSMessageDTO{
+			Type:    broadcastMessageType,
+			Payload: payload,
 		}
 	}
 }

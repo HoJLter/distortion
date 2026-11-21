@@ -6,30 +6,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Message struct {
-	TargetChannel Channel
-	Author        User
-	Content       string
-}
-
-type MessageAuthor struct {
-	UID        string  `json:"uid"`
-	Username   string  `json:"username"`
-	AvatarPath *string `json:"avatar_path"`
-}
-
-type GetMessageResponse struct {
-	MessageID int           `json:"message_id"`
-	Author    MessageAuthor `json:"author"`
-	Content   string        `json:"content"`
-}
-
-type PostMessageParams struct {
-	ChannelUID string
-	UserUID    string
-	Content    string
-}
-
 type MessageRepository struct {
 	pool *pgxpool.Pool
 }
@@ -38,19 +14,42 @@ func NewMessageRepository(pool *pgxpool.Pool) *MessageRepository {
 	return &MessageRepository{pool: pool}
 }
 
-func (m MessageRepository) Post(ctx context.Context, message PostMessageParams) (int, error) {
-	row := m.pool.QueryRow(ctx,
-		`INSERT INTO messages (channel_uid, user_uid, content) VALUES ($1, $2, $3) RETURNING id`,
+type PostMessageParams struct {
+	ChannelUID string
+	UserUID    string
+	Content    string
+}
+
+func (m MessageRepository) Post(ctx context.Context, message PostMessageParams) (MessageRecord, error) {
+	var record MessageRecord
+
+	err := m.pool.QueryRow(ctx,
+		`WITH inserted AS (INSERT INTO messages (channel_uid, user_uid, content)
+    VALUES ($1, $2, $3)
+    RETURNING id, user_uid, content
+)
+SELECT
+    inserted.id,
+    users.uid,
+    users.username,
+    users.avatar_path,
+    inserted.content
+FROM inserted
+JOIN users ON users.uid = inserted.user_uid;`,
 		message.ChannelUID, message.UserUID, message.Content,
+	).Scan(
+		&record.MessageID,
+		&record.Author.UID,
+		&record.Author.Username,
+		&record.Author.AvatarPath,
+		&record.Content,
 	)
-	var id int
-	err := row.Scan(&id)
 
 	if err != nil {
-		return 0, err
+		return MessageRecord{}, err
 	}
 
-	return id, nil
+	return record, nil
 }
 
 func (m MessageRepository) Delete(
@@ -67,12 +66,23 @@ func (m MessageRepository) Delete(
 	return nil
 }
 
+type AuthorRecord struct {
+	UID        string
+	Username   string
+	AvatarPath string
+}
+type MessageRecord struct {
+	MessageID int
+	Author    AuthorRecord
+	Content   string
+}
+
 func (m MessageRepository) GetMessagesForChannel(
 	ctx context.Context,
 	channelUID string,
 	offset int,
 	limit int,
-) ([]GetMessageResponse, error) {
+) ([]MessageRecord, error) {
 	rows, err := m.pool.Query(ctx,
 		`SELECT 
     			messages.id,
@@ -93,9 +103,9 @@ func (m MessageRepository) GetMessagesForChannel(
 	}
 	defer rows.Close()
 
-	var values []GetMessageResponse
+	var values []MessageRecord
 	for rows.Next() {
-		var message GetMessageResponse
+		var message MessageRecord
 		err = rows.Scan(
 			&message.MessageID,
 			&message.Author.UID,
