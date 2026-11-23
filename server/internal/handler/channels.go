@@ -30,7 +30,7 @@ func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	messagesRecords, err := h.messages.GetMessagesForChannel(r.Context(), channelUID, offset, limit)
+	messagesRecords, err := h.messages.GetForChannel(r.Context(), channelUID, offset, limit)
 	if err != nil {
 		slog.Error("getMessages() error", "err", err, "channelUID", channelUID)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -38,7 +38,8 @@ func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var messages []MessageDTO
-	for _, record := range messagesRecords {
+	for i, record := range messagesRecords {
+		slog.Debug("", "num", i)
 		messages = append(messages, RecordToMessageDTO(record))
 	}
 
@@ -80,7 +81,7 @@ func (h Handler) createMessage(w http.ResponseWriter, r *http.Request) {
 		Content:    unmarshalledData.Content,
 	}
 	slog.Debug("Unmasrhalled struct", "struct:", postMessageParams)
-	messageRecord, err := h.messages.Post(r.Context(), postMessageParams)
+	messageRecord, err := h.messages.Create(r.Context(), postMessageParams)
 	if err != nil {
 		slog.Error("Post() error", "err", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -102,12 +103,22 @@ func (h Handler) createMessage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h Handler) createTextChannel(w http.ResponseWriter, r *http.Request) {
+func (h Handler) createChannel(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Request reading error", http.StatusBadRequest)
+		slog.Error("Request reading error", "body", body)
+		return
+	}
 
-}
+	var data CreateChannelRequest
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		http.Error(w, "Invalid format", http.StatusBadRequest)
+		slog.Error("Invalid format", "data", data)
+	}
 
-func (h Handler) createVoiceChannel(w http.ResponseWriter, r *http.Request) {
-
+	dbParams := repository.CreateMessageParams{}
 }
 
 func (h Handler) connectToVoiceChannel(w http.ResponseWriter, r *http.Request) {
@@ -128,7 +139,6 @@ func setupChannelsRouter(parentRouter chi.Router, h *Handler) {
 	channelsRouter.Post("/{channel_uid}/messages", h.createMessage)
 
 	channelsRouter.Get("/", h.getChannels)
-	channelsRouter.Post("/", h.createTextChannel)
-	channelsRouter.Post("/", h.createVoiceChannel)
+	channelsRouter.Post("/", h.createChannel)
 	channelsRouter.Delete("/{channel_uid}", h.deleteChannel)
 }

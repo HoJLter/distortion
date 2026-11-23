@@ -14,13 +14,13 @@ func NewMessageRepository(pool *pgxpool.Pool) *MessageRepository {
 	return &MessageRepository{pool: pool}
 }
 
-type PostMessageParams struct {
+type CreateMessageParams struct {
 	ChannelUID string
 	UserUID    string
 	Content    string
 }
 
-func (m MessageRepository) Post(ctx context.Context, message PostMessageParams) (MessageRecord, error) {
+func (m MessageRepository) Create(ctx context.Context, params CreateMessageParams) (MessageRecord, error) {
 	var record MessageRecord
 
 	err := m.pool.QueryRow(ctx,
@@ -36,7 +36,7 @@ SELECT
     inserted.content
 FROM inserted
 JOIN users ON users.uid = inserted.user_uid;`,
-		message.ChannelUID, message.UserUID, message.Content,
+		params.ChannelUID, params.UserUID, params.Content,
 	).Scan(
 		&record.MessageID,
 		&record.Author.UID,
@@ -77,7 +77,7 @@ type MessageRecord struct {
 	Content   string
 }
 
-func (m MessageRepository) GetMessagesForChannel(
+func (m MessageRepository) GetForChannel(
 	ctx context.Context,
 	channelUID string,
 	offset int,

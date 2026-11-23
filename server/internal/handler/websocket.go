@@ -46,18 +46,32 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var acqMessage WSPostMessageDTO
-		err = json.Unmarshal(data, &acqMessage)
+		var acqWsMessage WSMessageDTO
+		err = json.Unmarshal(data, &acqWsMessage)
 		if err != nil {
 			slog.Error("Unmarshalling error", "err", err)
 			return
 		}
-		slog.Debug("Message unmarshalled", "msg", acqMessage)
+		slog.Debug("WS Message unmarshalled", "msg", acqWsMessage)
 
-		messageRecord, err := h.messages.Post(ctx, repository.PostMessageParams{
-			ChannelUID: acqMessage.ChannelUID,
-			UserUID:    acqMessage.UserUID,
-			Content:    acqMessage.Content,
+		if acqWsMessage.Type != postMessageType {
+			slog.Error("Invalid type: ", "type", acqWsMessage.Type)
+			return
+		}
+
+		var acqPostMessage WSPostMessageDTO
+
+		err = json.Unmarshal(acqWsMessage.Payload, &acqPostMessage)
+		if err != nil {
+			slog.Error("Unmarshalling error", "err", err)
+			return
+		}
+		slog.Debug("WS Post Message unmarshalled", "msg", acqPostMessage)
+
+		messageRecord, err := h.messages.Create(ctx, repository.PostMessageParams{
+			ChannelUID: acqPostMessage.ChannelUID,
+			UserUID:    acqPostMessage.UserUID,
+			Content:    acqPostMessage.Content,
 		})
 		if err != nil {
 			slog.Error("Database transfer failed", "err", err)

@@ -28,13 +28,17 @@ func NewWsClient(ctx context.Context, conn *websocket.Conn) *WsClient {
 func (w *WsClient) Listen() {
 	for {
 		select {
-		case msg := <-w.messages:
+		case msg, ok := <-w.messages:
 			{
-				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				if !ok {
+					return
+				}
+				ctx, cancel := context.WithTimeout(w.ctx, 5*time.Second)
 
 				data, err := json.Marshal(msg)
 				if err != nil {
 					slog.Error("Error while marshalling for client")
+					continue
 				}
 
 				if err := w.conn.Write(ctx, websocket.MessageText, data); err != nil {

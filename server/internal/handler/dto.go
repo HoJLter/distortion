@@ -44,6 +44,18 @@ type WSPostMessageDTO struct {
 }
 
 type WSMessageDTO struct {
-	Type    string `json:"type"`
-	Payload json.RawMessage
+	Type    string          `json:"type"`
+	Payload json.RawMessage `json:"payload"`
+}
+
+type ChannelType string
+
+const (
+	TextChannelType  ChannelType = "text"
+	VoiceChannelType ChannelType = "voice"
+)
+
+type CreateChannelRequest struct {
+	ChannelUID string      `json:"channel_uid"`
+	Type       ChannelType `json:"type"`
 }
