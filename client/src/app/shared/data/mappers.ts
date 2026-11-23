@@ -1,8 +1,8 @@
-import { GetMessageDTO } from './dto-models/message.models';
+import { GetMessageResponse } from './dto-models/message.models';
 import { MessageModel } from './models/message.models';
 
 
-export function mapMessage(dtoMessage: GetMessageDTO): MessageModel{
+export function mapMessage(dtoMessage: GetMessageResponse): MessageModel{
     let mappedMessage: MessageModel = {
         id: dtoMessage.message_id,
         author: {

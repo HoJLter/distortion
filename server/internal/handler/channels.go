@@ -45,61 +45,9 @@ func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "appcilation/json")
 
+	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(messages); err != nil {
 		slog.Error("getMessages() encoding error")
-	}
-}
-
-/*
-SCHEMA:
-
-	{
-		user_uid: string,
-		content: string
-	}
-*/
-
-func (h Handler) createMessage(w http.ResponseWriter, r *http.Request) {
-	data, err := io.ReadAll(r.Body)
-	if err != nil {
-		slog.Error("postMessage() error", "err", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	var unmarshalledData CreateMessageRequest
-	err = json.Unmarshal(data, &unmarshalledData)
-	if err != nil {
-		slog.Error("Invalid json", "err", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	postMessageParams := repository.PostMessageParams{
-		ChannelUID: chi.URLParam(r, "channel_uid"),
-		UserUID:    unmarshalledData.UserUID,
-		Content:    unmarshalledData.Content,
-	}
-	slog.Debug("Unmasrhalled struct", "struct:", postMessageParams)
-	messageRecord, err := h.messages.Create(r.Context(), postMessageParams)
-	if err != nil {
-		slog.Error("Post() error", "err", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	resp, err := json.Marshal(CreateMessageResponse{MessageID: messageRecord.MessageID})
-	if err != nil {
-		slog.Error("Marshal() error", "err", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	_, err = w.Write(resp)
-	if err != nil {
-		slog.Error("Write() error", "err", err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
 }
 
@@ -107,7 +55,7 @@ func (h Handler) createChannel(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Request reading error", http.StatusBadRequest)
-		slog.Error("Request reading error", "body", body)
+		slog.Error("Request reading error", "body", body, "err", err)
 		return
 	}
 
@@ -115,28 +63,70 @@ func (h Handler) createChannel(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		http.Error(w, "Invalid format", http.StatusBadRequest)
-		slog.Error("Invalid format", "data", data)
+		slog.Error("Invalid format", "data", data, "err", err)
+		return
 	}
 
-	dbParams := repository.CreateMessageParams{}
+	dbParams := repository.CreateChannelParams{
+		UID:  data.ChannelUID,
+		Type: data.Type,
+	}
+	if err := h.channels.Create(r.Context(), dbParams); err != nil {
+		http.Error(w, "DB request failed", http.StatusInternalServerError)
+		slog.Error("Error while db request", "params", dbParams, "err", err)
+		return
+	}
+}
+
+func (h Handler) getChannels(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Request reading error", http.StatusBadRequest)
+		slog.Error("Request reading error", "body", body, "err", err)
+		return
+	}
+
+	var data CreateChannelRequest
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		http.Error(w, "Invalid format", http.StatusBadRequest)
+		slog.Error("Invalid format", "data", data, "err", err)
+		return
+	}
+
+	channels, err := h.channels.GetAll(r.Context())
+	if err != nil {
+		http.Error(w, "DB request failed", http.StatusInternalServerError)
+		slog.Error("Error while db request", "err", err)
+		return
+	}
+
+	if err := json.NewEncoder(w).Encode(channels); err != nil {
+		http.Error(w, "Error while writing request", http.StatusInternalServerError)
+		slog.Error("Error while writing request")
+		return
+	}
+}
+
+func (h Handler) deleteChannel(w http.ResponseWriter, r *http.Request) {
+	channel_uid := chi.URLParam(r, "channel_uid")
+
+	if err := h.channels.Delete(r.Context(), channel_uid); err != nil {
+		http.Error(w, "DB request failed", http.StatusInternalServerError)
+		slog.Error("Error while db request", "err", err)
+		return
+	}
 }
 
 func (h Handler) connectToVoiceChannel(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h Handler) deleteChannel(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (h Handler) getChannels(w http.ResponseWriter, r *http.Request) {}
-
 func setupChannelsRouter(parentRouter chi.Router, h *Handler) {
 	channelsRouter := chi.NewRouter()
 	parentRouter.Mount("/channels", channelsRouter)
 
 	channelsRouter.Get("/{channel_uid}/messages", h.getMessages)
-	channelsRouter.Post("/{channel_uid}/messages", h.createMessage)
 
 	channelsRouter.Get("/", h.getChannels)
 	channelsRouter.Post("/", h.createChannel)

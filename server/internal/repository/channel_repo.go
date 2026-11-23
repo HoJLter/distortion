@@ -7,13 +7,19 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type ChannelRecord struct {
-	UID  string
-	Type string
-}
-
 type ChannelRepository struct {
 	pool *pgxpool.Pool
+}
+type ChannelType string
+
+const (
+	TextChannelType  ChannelType = "text"
+	VoiceChannelType ChannelType = "voice"
+)
+
+type ChannelRecord struct {
+	UID  string
+	Type ChannelType
 }
 
 func NewChannelRepository(pool *pgxpool.Pool) *ChannelRepository {
@@ -45,13 +51,18 @@ func (c ChannelRepository) GetAll(ctx context.Context) ([]ChannelRecord, error) 
 	return records, nil
 }
 
-func (c ChannelRepository) Create(ctx context.Context, channel ChannelRecord) error {
+type CreateChannelParams struct {
+	UID  string
+	Type ChannelType
+}
+
+func (c ChannelRepository) Create(ctx context.Context, channel CreateChannelParams) error {
 	_, err := c.pool.Exec(ctx,
 		`INSERT INTO channels (uid, type) VALUES ($1, $2)`,
 		channel.UID, channel.Type,
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("Create channel: %w", err)
 	}
 
 	return nil

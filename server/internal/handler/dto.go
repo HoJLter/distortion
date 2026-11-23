@@ -48,14 +48,7 @@ type WSMessageDTO struct {
 	Payload json.RawMessage `json:"payload"`
 }
 
-type ChannelType string
-
-const (
-	TextChannelType  ChannelType = "text"
-	VoiceChannelType ChannelType = "voice"
-)
-
 type CreateChannelRequest struct {
-	ChannelUID string      `json:"channel_uid"`
-	Type       ChannelType `json:"type"`
+	ChannelUID string                 `json:"channel_uid"`
+	Type       repository.ChannelType `json:"type"`
 }

@@ -1,7 +1,7 @@
 import { effect, inject, Service, signal } from '@angular/core';
 import { MessageModel } from '../data/models/message.models';
 import { DbApiService } from './db-api-service';
-import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models';
+import { GetMessageResponse, PostMessageRequest } from '../data/dto-models/message.models';
 import { mapMessage } from '../data/mappers';
 import { filter, finalize, map, tap } from 'rxjs';
 import { UserService } from './user-service';
@@ -27,7 +27,7 @@ export class ChatManager {
                 tap((msg) => console.log("INITIAL", msg)),
                 filter((wsMsg) => wsMsg.type === WSMessageType.broadcastMessage),
                 tap((msg) => console.log("AFTER FILTER", msg)),
-                map((wsMsg) => wsMsg.payload as GetMessageDTO),
+                map((wsMsg) => wsMsg.payload as GetMessageResponse),
                 tap((msg) => console.log("AFTER CONVERSION", msg)),
                 map((getMsgDTO) => mapMessage(getMsgDTO)),
                 tap((msg) => console.log("AFTER MAPPING", msg))
@@ -62,7 +62,7 @@ export class ChatManager {
 
     // необходимо вебсокетом ловить и это получение сообщения
     sendMessage(channelUID: string, message: string): void {
-        let dtoMessage: PostMessageDTO = {
+        let dtoMessage: PostMessageRequest = {
             channel_uid: channelUID,
             user_uid: this.userService.getUID(),
             content: message,

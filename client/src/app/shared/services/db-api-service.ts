@@ -1,6 +1,6 @@
 import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models';
+import { GetMessageResponse, PostMessageRequest } from '../data/dto-models/message.models';
 import { Observable } from 'rxjs';
 
 @Service()
@@ -16,25 +16,31 @@ export class DbApiService {
     //     );
     // }
 
-    getMessages(channelUID: string, offset: number, limit: number): Observable<GetMessageDTO[]> {
+    getMessages(channelUID: string, offset: number, limit: number): Observable<GetMessageResponse[]> {
         console.log('getMessages called');
-        return this.httpClient.get<GetMessageDTO[]>(
+        return this.httpClient.get<GetMessageResponse[]>(
             `${this.serverIP}/api/channels/${channelUID}/messages?offset=${offset}&limit=${limit}`,
         );
     }
 
-    getUsers(): Observable<GetMessageDTO[]> {
+    createChannel(channelUID: string, type: string): Observable<GetMessageResponse[]> {
         console.log('getUsers');
-        return this.httpClient.get<GetMessageDTO[]>(
-            `${this.serverIP}/api/channels/${channelUID}/messages?offset=${offset}&limit=${limit}`,
+        return this.httpClient.get<GetMessageResponse[]>(
+            `${this.serverIP}/api/channels/`,
         );
     }
 
-    sendMessage(channelUID: string, message: PostMessageDTO) {
-        this.httpClient
-            .post(`${this.serverIP}/api/channels/${channelUID}/messages`, JSON.stringify(message))
-            .subscribe((response) => {
-                console.log(response);
-            });
+    getChannels(): Observable<GetMessageResponse[]> {
+        console.log('getUsers');
+        return this.httpClient.get<GetMessageResponse[]>(
+            `${this.serverIP}/api/channels/`,
+        );
+    }
+
+    getUsers(): Observable<GetMessageResponse[]> {
+        console.log('getUsers');
+        return this.httpClient.get<GetMessageResponse[]>(
+            `${this.serverIP}/api/users`,
+        );
     }
 }

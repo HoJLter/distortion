@@ -1,7 +1,7 @@
 import { Service, Signal, WritableSignal } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import { Message } from '../message/message';
-import { PostMessageDTO, WSMessage } from '../data/dto-models/message.models';
+import { PostMessageRequest, WSMessage } from '../data/dto-models/message.models';
 import {MessageModel} from "../data/models/message.models";
 import {webSocket} from "rxjs/webSocket";
 
@@ -14,7 +14,7 @@ export namespace WSMessageType {
 export class WebsocketService {
     private socket = webSocket<WSMessage>("ws://127.0.0.1:21530/api/ws");
 
-    sendMessage(message: PostMessageDTO) {
+    sendMessage(message: PostMessageRequest) {
         let wsMessage = {
             type: WSMessageType.postMessage,
             payload: message
