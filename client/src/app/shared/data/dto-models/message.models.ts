@@ -14,6 +14,11 @@ export interface GetMessageDTO {
 
 export interface PostMessageDTO {
     channel_uid: string;
-    user_uid: string,
-    content: string,
+    user_uid: string;
+    content: string;
+}
+
+export interface WSMessage {
+    type: string;
+    payload: Object;
 }

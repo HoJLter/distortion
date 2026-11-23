@@ -3,9 +3,9 @@ import { MessageModel } from '../data/models/message.models';
 import { DbApiService } from './db-api-service';
 import { GetMessageDTO, PostMessageDTO } from '../data/dto-models/message.models';
 import { mapMessage } from '../data/mappers';
-import { finalize, map } from 'rxjs';
+import { filter, finalize, map, tap } from 'rxjs';
 import { UserService } from './user-service';
-import { WebsocketService } from './websocket-service';
+import { WebsocketService, WSMessageType } from './websocket-service';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -21,7 +21,21 @@ export class ChatManager {
     dbApi: DbApiService = inject(DbApiService);
 
     constructor(){
-        this.websocketService.subscribe(this.messages);
+        this.websocketService
+            .observe()
+            .pipe(
+                tap((msg) => console.log("INITIAL", msg)),
+                filter((wsMsg) => wsMsg.type === WSMessageType.broadcastMessage),
+                tap((msg) => console.log("AFTER FILTER", msg)),
+                map((wsMsg) => wsMsg.payload as GetMessageDTO),
+                tap((msg) => console.log("AFTER CONVERSION", msg)),
+                map((getMsgDTO) => mapMessage(getMsgDTO)),
+                tap((msg) => console.log("AFTER MAPPING", msg))
+            )
+            .subscribe((message) => {
+                this.messages.update((msgs) => [...msgs, message]);
+                console.log('Message acquired');
+            });
     }
 
     selectTextChannel(channelUID: string){
@@ -54,6 +68,7 @@ export class ChatManager {
             content: message,
         };
         console.log(dtoMessage);
+
         this.websocketService.sendMessage(dtoMessage);
     }
 }

@@ -17,7 +17,14 @@ export class DbApiService {
     // }
 
     getMessages(channelUID: string, offset: number, limit: number): Observable<GetMessageDTO[]> {
-        console.log('getMessages');
+        console.log('getMessages called');
+        return this.httpClient.get<GetMessageDTO[]>(
+            `${this.serverIP}/api/channels/${channelUID}/messages?offset=${offset}&limit=${limit}`,
+        );
+    }
+
+    getUsers(): Observable<GetMessageDTO[]> {
+        console.log('getUsers');
         return this.httpClient.get<GetMessageDTO[]>(
             `${this.serverIP}/api/channels/${channelUID}/messages?offset=${offset}&limit=${limit}`,
         );
