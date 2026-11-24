@@ -11,14 +11,4 @@ import { Message } from '../../../shared/message/message';
 export class ChatMessages {
     chatManager = inject(ChatManager);
     chatMessages = this.chatManager.messages;
-
-    // constructor() {
-    //     effect(() => {
-    //         console.log('Channel switched');
-    //         untracked(() => {
-    //             this.chatManager.loadMessages(this.chatManager.selectedTextChannel(), 0, 50);
-    //         })
-    //     })
-    // }
-
 }
