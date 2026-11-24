@@ -2,6 +2,8 @@ import { GetMessageResponse } from './dto-models/message.models';
 import { MessageModel } from './models/message.models';
 import { GetUserResponse } from './dto-models/user.models';
 import { UserModel } from './models/user.models';
+import {GetChannelResponse} from "./dto-models/channel.models";
+import {ChannelModel} from "./models/channel.models";
 
 
 export function mapMessage(dtoMessage: GetMessageResponse): MessageModel{
@@ -24,4 +26,13 @@ export function mapUser(dtoUser: GetUserResponse): UserModel {
     }
     console.log('user mapping called');
     return user
+}
+
+export function mapChannel(dtoChannel: GetChannelResponse): ChannelModel {
+    let channel: ChannelModel = {
+        uid: dtoChannel.channel_uid,
+        type: dtoChannel.type,
+    }
+    console.log('channel mapping called');
+    return channel;
 }

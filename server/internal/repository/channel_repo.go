@@ -29,7 +29,7 @@ func NewChannelRepository(pool *pgxpool.Pool) *ChannelRepository {
 func (c ChannelRepository) GetAll(ctx context.Context) ([]ChannelRecord, error) {
 	var records []ChannelRecord
 	rows, err := c.pool.Query(ctx,
-		`SELECT * FROM channels`,
+		`SELECT type, uid FROM channels`,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("get all channels: sql query %w", err)

@@ -1,9 +1,8 @@
 import { MessageAuthorDTO } from './message.models';
 
 export interface GetChannelResponse {
-    message_id: number;
-    author: MessageAuthorDTO;
-    content: string;
+    channel_uid: string;
+    type: string;
 }
 
 export interface CreateChannelRequest {

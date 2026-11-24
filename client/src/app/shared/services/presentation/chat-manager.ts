@@ -2,11 +2,12 @@ import { effect, inject, Service, signal } from '@angular/core';
 import { MessageModel } from '../../data/models/message.models';
 import { DbApiService } from '../transport/db-api-service';
 import { GetMessageResponse, PostMessageRequest } from '../../data/dto-models/message.models';
-import { mapMessage } from '../../data/mappers';
-import { filter, finalize, map, tap } from 'rxjs';
+import { mapChannel, mapMessage } from '../../data/mappers';
+import { filter, finalize, map, Observable, tap } from 'rxjs';
 import { UserService } from './user-service';
 import { WebsocketService, WSMessageType } from '../transport/websocket-service';
 import { HttpClient } from '@angular/common/http';
+import { ChannelModel } from '../../data/models/channel.models';
 
 
 @Service()
@@ -15,6 +16,7 @@ export class ChatManager {
     isLoading = signal<boolean>(false);
 
     selectedTextChannel = signal<string>("choose the channel")
+    channels = signal<ChannelModel[]>([]);
 
     userService: UserService = inject(UserService);
     websocketService = inject(WebsocketService);
@@ -36,6 +38,17 @@ export class ChatManager {
                 this.messages.update((msgs) => [...msgs, message]);
                 console.log('Message acquired');
             });
+    }
+
+    updateChannels() {
+        console.log("update channels called");
+        this.dbApi.getChannels().pipe(
+            map((channels) => channels.map(mapChannel)),
+            map((channels) => channels.filter((channel) => channel.type == "text")),
+        ).subscribe((channels => {
+            console.log(channels)
+            this.channels.set(channels);
+        }))
     }
 
     selectTextChannel(channelUID: string){

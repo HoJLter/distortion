@@ -80,26 +80,16 @@ func (h Handler) createChannel(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) getChannels(w http.ResponseWriter, r *http.Request) {
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Request reading error", http.StatusBadRequest)
-		slog.Error("Request reading error", "body", body, "err", err)
-		return
-	}
-
-	var data dto.GetChannelResponse
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		http.Error(w, "Invalid format", http.StatusBadRequest)
-		slog.Error("Invalid format", "data", data, "err", err)
-		return
-	}
-
-	channels, err := h.channels.GetAll(r.Context())
+	channelsRecords, err := h.channels.GetAll(r.Context())
 	if err != nil {
 		http.Error(w, "DB request failed", http.StatusInternalServerError)
 		slog.Error("Error while db request", "err", err)
 		return
+	}
+
+	var channels []dto.GetChannelResponse
+	for _, record := range channelsRecords {
+		channels = append(channels, dto.RecordToChannelDTO(record))
 	}
 
 	if err := json.NewEncoder(w).Encode(channels); err != nil {

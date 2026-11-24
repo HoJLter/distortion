@@ -5,7 +5,7 @@ import {
     PostMessageRequest,
 } from '../../data/dto-models/message.models';
 import { Observable } from 'rxjs';
-import {CreateChannelRequest} from "../../data/dto-models/channel.models";
+import { CreateChannelRequest, GetChannelResponse } from '../../data/dto-models/channel.models';
 import {GetUserResponse} from "../../data/dto-models/user.models";
 
 @Service()
@@ -35,9 +35,9 @@ export class DbApiService {
         return this.httpClient.post<void>(`${this.serverIP}/api/channels`, body);
     }
 
-    getChannels(): Observable<GetMessageResponse[]> {
+    getChannels(): Observable<GetChannelResponse[]> {
         console.log('getChannels called');
-        return this.httpClient.get<GetMessageResponse[]>(`${this.serverIP}/api/channels`);
+        return this.httpClient.get<GetChannelResponse[]>(`${this.serverIP}/api/channels`);
     }
 
     getUsers(): Observable<GetUserResponse[]> {
