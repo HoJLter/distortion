@@ -1,5 +1,6 @@
 .container{
     display: flex;
+    gap: 20px;
 
     flex-direction: row-reverse;
 
@@ -7,4 +8,26 @@
 
     margin-bottom: var(--server-header-margin);
     padding: 0 20px 0 0;
+}
+
+
+button{
+    background: none;
+    border: solid 1px var(--color-border);
+    border-radius: 20px;
+    background-color: var(--color-surface1);
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: var(--color-surface0);
+}
+
+.settings-icon{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-surface3);
+
+    mask: url("/icons/settings.svg") center / contain no-repeat;
 }
