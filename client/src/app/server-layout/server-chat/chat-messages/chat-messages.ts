@@ -1,5 +1,5 @@
 import { Component, effect, inject, untracked } from '@angular/core';
-import { ChatManager } from '../../../shared/services/chat-manager';
+import { ChatManager } from '../../../shared/services/presentation/chat-manager';
 import { Message } from '../../../shared/message/message';
 
 @Component({

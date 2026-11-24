@@ -1,5 +1,5 @@
 import { Component, inject, Input, output } from '@angular/core';
-import { ChatManager } from '../../../../shared/services/chat-manager';
+import { ChatManager } from '../../../../shared/services/presentation/chat-manager';
 import {ChannelModel} from '../../../../shared/data/models/channel.models';
 
 @Component({

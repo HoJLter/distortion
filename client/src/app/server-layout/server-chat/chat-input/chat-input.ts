@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
-import { ChatManager } from '../../../shared/services/chat-manager';
+import { ChatManager } from '../../../shared/services/presentation/chat-manager';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { UserService } from '../../../shared/services/user-service';
+import { UserService } from '../../../shared/services/presentation/user-service';
 import {PostMessageRequest} from '../../../shared/data/dto-models/message.models';
 
 @Component({

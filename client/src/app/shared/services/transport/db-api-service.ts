@@ -3,10 +3,10 @@ import { HttpClient, HttpResponse} from '@angular/common/http';
 import {
     GetMessageResponse,
     PostMessageRequest,
-} from '../data/dto-models/message.models';
+} from '../../data/dto-models/message.models';
 import { Observable } from 'rxjs';
-import {CreateChannelRequest} from "../data/dto-models/channel.models";
-import {GetUserResponse} from "../data/dto-models/user.models";
+import {CreateChannelRequest} from "../../data/dto-models/channel.models";
+import {GetUserResponse} from "../../data/dto-models/user.models";
 
 @Service()
 export class DbApiService {

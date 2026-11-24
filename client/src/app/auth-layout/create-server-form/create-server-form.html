@@ -1,1 +1,21 @@
-<p>create-server-form works!</p>
+<form>
+    <h1>Create the server</h1>
+    <div class="description">
+        Enter the credentials for SSH access to your VPS. Script will install ORDOX server to it. You can get it from your VPS provider
+    </div>
+    <div class="input-container">
+        <label for="server-address">Server address</label>
+        <input type="text" id="server-address" placeholder="91.205.220.152 | awesome.com">
+    </div>
+
+    <div class="input-container">
+        <label for="username">User</label>
+        <input type="text" id="username" placeholder="root">
+    </div>
+    <div class="input-container">
+        <label for="password">Password or key</label>
+        <input type="password" id="password" placeholder="password">
+    </div>
+
+    <button> Continue </button>
+</form>

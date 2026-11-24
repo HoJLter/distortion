@@ -1,11 +1,11 @@
 import { effect, inject, Service, signal } from '@angular/core';
-import { MessageModel } from '../data/models/message.models';
-import { DbApiService } from './db-api-service';
-import { GetMessageResponse, PostMessageRequest } from '../data/dto-models/message.models';
-import { mapMessage } from '../data/mappers';
+import { MessageModel } from '../../data/models/message.models';
+import { DbApiService } from '../transport/db-api-service';
+import { GetMessageResponse, PostMessageRequest } from '../../data/dto-models/message.models';
+import { mapMessage } from '../../data/mappers';
 import { filter, finalize, map, tap } from 'rxjs';
 import { UserService } from './user-service';
-import { WebsocketService, WSMessageType } from './websocket-service';
+import { WebsocketService, WSMessageType } from '../transport/websocket-service';
 import { HttpClient } from '@angular/common/http';
 
 

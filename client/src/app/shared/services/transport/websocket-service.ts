@@ -1,8 +1,8 @@
 import { Service, Signal, WritableSignal } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import { Message } from '../message/message';
-import { PostMessageRequest, WSMessage } from '../data/dto-models/message.models';
-import {MessageModel} from "../data/models/message.models";
+import { Message } from '../../message/message';
+import { PostMessageRequest, WSMessage } from '../../data/dto-models/message.models';
+import {MessageModel} from "../../data/models/message.models";
 import {webSocket} from "rxjs/webSocket";
 
 export namespace WSMessageType {

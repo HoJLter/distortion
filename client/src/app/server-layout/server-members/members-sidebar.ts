@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, Input } from '@angular/core';
 import { MemberGroup } from './member-group/member-group';
 import { UserGroupModel } from '../../shared/data/models/user.models';
-import {UserService} from '../../shared/services/user-service';
+import {UserService} from '../../shared/services/presentation/user-service';
 
 
 @Component({
