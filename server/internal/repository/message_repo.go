@@ -26,10 +26,11 @@ func (m MessageRepository) Create(ctx context.Context, params CreateMessageParam
 	err := m.pool.QueryRow(ctx,
 		`WITH inserted AS (INSERT INTO messages (channel_uid, user_uid, content)
     VALUES ($1, $2, $3)
-    RETURNING id, user_uid, content
+    RETURNING id, channel_uid, user_uid, content
 )
 SELECT
     inserted.id,
+	inserted.channel_uid,
     users.uid,
     users.username,
     users.avatar_path,
@@ -39,6 +40,7 @@ JOIN users ON users.uid = inserted.user_uid;`,
 		params.ChannelUID, params.UserUID, params.Content,
 	).Scan(
 		&record.MessageID,
+		&record.ChannelUID,
 		&record.Author.UID,
 		&record.Author.Username,
 		&record.Author.AvatarPath,
@@ -69,12 +71,13 @@ func (m MessageRepository) Delete(
 type AuthorRecord struct {
 	UID        string
 	Username   string
-	AvatarPath string
+	AvatarPath *string
 }
 type MessageRecord struct {
-	MessageID int
-	Author    AuthorRecord
-	Content   string
+	ChannelUID string
+	MessageID  int
+	Author     AuthorRecord
+	Content    string
 }
 
 func (m MessageRepository) GetForChannel(
@@ -85,6 +88,7 @@ func (m MessageRepository) GetForChannel(
 ) ([]MessageRecord, error) {
 	rows, err := m.pool.Query(ctx,
 		`SELECT 
+    			channel_uid,
     			messages.id,
     			users.uid,
 				users.username, 
@@ -107,6 +111,7 @@ func (m MessageRepository) GetForChannel(
 	for rows.Next() {
 		var message MessageRecord
 		err = rows.Scan(
+			&message.ChannelUID,
 			&message.MessageID,
 			&message.Author.UID,
 			&message.Author.Username,

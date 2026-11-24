@@ -22,23 +22,6 @@ export class ChatManager {
     websocketService = inject(WebsocketService);
     dbApi: DbApiService = inject(DbApiService);
 
-    constructor(){
-        this.websocketService
-            .observe()
-            .pipe(
-                tap((msg) => console.log('INITIAL', msg)),
-                filter((wsMsg) => wsMsg.type === WSMessageType.broadcastMessage),
-                tap((msg) => console.log('AFTER FILTER', msg)),
-                map((wsMsg) => wsMsg.payload as GetMessageResponse),
-                tap((msg) => console.log('AFTER CONVERSION', msg)),
-                map((getMsgDTO) => mapMessage(getMsgDTO)),
-                tap((msg) => console.log('AFTER MAPPING', msg)),
-            )
-            .subscribe((message) => {
-                this.messages.update((msgs) => [...msgs, message]);
-                console.log('Message acquired');
-            });
-    }
 
     updateChannels() {
         console.log("update channels called");
@@ -55,6 +38,24 @@ export class ChatManager {
         this.selectedTextChannel.set(channelUID);
         this.messages.set([]);
         this.loadMessages(this.selectedTextChannel(), 0, 50);
+
+        this.websocketService.changeChannel(channelUID)
+
+        this.websocketService
+            .observe()
+            .pipe(
+                tap((msg) => console.log('INITIAL', msg)),
+                filter((wsMsg) => wsMsg.type === WSMessageType.broadcastMessage),
+                tap((msg) => console.log('AFTER FILTER', msg)),
+                map((wsMsg) => wsMsg.payload as GetMessageResponse),
+                tap((msg) => console.log('AFTER CONVERSION', msg)),
+                map((getMsgDTO) => mapMessage(getMsgDTO)),
+                tap((msg) => console.log('AFTER MAPPING', msg)),
+            )
+            .subscribe((message) => {
+                this.messages.update((msgs) => [...msgs, message]);
+                console.log('Message acquired');
+            });
     }
 
     loadMessages(channelUID: string, offset: number, limit: number) {

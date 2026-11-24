@@ -18,6 +18,7 @@ const (
 )
 
 func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
+	channel_uid := chi.URLParam(r, "channel_uid")
 
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		InsecureSkipVerify: true,
@@ -32,7 +33,7 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	client := NewWsClient(ctx, conn)
+	client := NewWsClient(ctx, conn, channel_uid)
 	h.hub.subscribe <- client
 	defer func() { h.hub.unsubscribe <- client }()
 
@@ -67,7 +68,6 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 			slog.Error("Unmarshalling error", "err", err)
 			return
 		}
-		slog.Debug("WS Post Message unmarshalled", "msg", acqPostMessage)
 
 		messageRecord, err := h.messages.Create(ctx, repository.CreateMessageParams{
 			ChannelUID: acqPostMessage.ChannelUID,
@@ -100,5 +100,5 @@ func SetupWsRouter(parentRouter chi.Router, h *Handler) {
 	wsRouter := chi.NewRouter()
 	parentRouter.Mount("/ws", wsRouter)
 
-	wsRouter.Get("/", h.handleWs)
+	wsRouter.Get("/{channel_uid}", h.handleWs)
 }

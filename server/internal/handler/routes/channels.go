@@ -39,8 +39,7 @@ func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var messages []dto.MessageDTO
-	for i, record := range messagesRecords {
-		slog.Debug("", "num", i)
+	for _, record := range messagesRecords {
 		messages = append(messages, dto.RecordToMessageDTO(record))
 	}
 

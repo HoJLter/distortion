@@ -1,8 +1,5 @@
 import { Service, Signal, WritableSignal } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import { Message } from '../../message/message';
 import { PostMessageRequest, WSMessage } from '../../data/dto-models/message.models';
-import {MessageModel} from "../../data/models/message.models";
 import {webSocket} from "rxjs/webSocket";
 
 export namespace WSMessageType {
@@ -12,17 +9,22 @@ export namespace WSMessageType {
 
 @Service()
 export class WebsocketService {
-    private socket = webSocket<WSMessage>("ws://127.0.0.1:21530/api/ws");
+    private socket = webSocket<WSMessage>("");
+
+    changeChannel(channelId: string) {
+        this.socket.complete();
+        this.socket = webSocket<WSMessage>(`ws://127.0.0.1:21530/api/ws/${channelId}`);
+    }
 
     sendMessage(message: PostMessageRequest) {
         let wsMessage = {
             type: WSMessageType.postMessage,
-            payload: message
-        }
+            payload: message,
+        };
         this.socket.next(wsMessage);
     }
 
     observe() {
-        return this.socket.asObservable()
+        return this.socket.asObservable();
     }
 }

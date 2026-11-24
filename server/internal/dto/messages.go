@@ -3,9 +3,9 @@ package dto
 import "server/internal/repository"
 
 type MessageAuthorDTO struct {
-	UID        string `json:"uid"`
-	Username   string `json:"username"`
-	AvatarPath string `json:"avatar_path"`
+	UID        string  `json:"uid"`
+	Username   string  `json:"username"`
+	AvatarPath *string `json:"avatar_path"`
 }
 type MessageDTO struct {
 	MessageID  int              `json:"message_id"`
@@ -16,7 +16,8 @@ type MessageDTO struct {
 
 func RecordToMessageDTO(record repository.MessageRecord) MessageDTO {
 	return MessageDTO{
-		MessageID: record.MessageID,
+		MessageID:  record.MessageID,
+		ChannelUID: record.ChannelUID,
 		Author: MessageAuthorDTO{
 			UID:        record.Author.UID,
 			Username:   record.Author.Username,
