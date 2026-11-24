@@ -26,13 +26,13 @@ export class ChatManager {
         this.websocketService
             .observe()
             .pipe(
-                tap((msg) => console.log("INITIAL", msg)),
+                tap((msg) => console.log('INITIAL', msg)),
                 filter((wsMsg) => wsMsg.type === WSMessageType.broadcastMessage),
-                tap((msg) => console.log("AFTER FILTER", msg)),
+                tap((msg) => console.log('AFTER FILTER', msg)),
                 map((wsMsg) => wsMsg.payload as GetMessageResponse),
-                tap((msg) => console.log("AFTER CONVERSION", msg)),
+                tap((msg) => console.log('AFTER CONVERSION', msg)),
                 map((getMsgDTO) => mapMessage(getMsgDTO)),
-                tap((msg) => console.log("AFTER MAPPING", msg))
+                tap((msg) => console.log('AFTER MAPPING', msg)),
             )
             .subscribe((message) => {
                 this.messages.update((msgs) => [...msgs, message]);
