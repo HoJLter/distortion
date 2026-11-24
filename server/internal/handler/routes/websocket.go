@@ -1,10 +1,11 @@
-package handler
+package routes
 
 import (
 	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"server/internal/dto"
 	"server/internal/repository"
 
 	"github.com/coder/websocket"
@@ -46,7 +47,7 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var acqWsMessage WSMessageDTO
+		var acqWsMessage dto.WSMessageDTO
 		err = json.Unmarshal(data, &acqWsMessage)
 		if err != nil {
 			slog.Error("Unmarshalling error", "err", err)
@@ -59,7 +60,7 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var acqPostMessage WSPostMessageDTO
+		var acqPostMessage dto.WSPostMessageDTO
 
 		err = json.Unmarshal(acqWsMessage.Payload, &acqPostMessage)
 		if err != nil {
@@ -68,7 +69,7 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 		}
 		slog.Debug("WS Post Message unmarshalled", "msg", acqPostMessage)
 
-		messageRecord, err := h.messages.Create(ctx, repository.PostMessageParams{
+		messageRecord, err := h.messages.Create(ctx, repository.CreateMessageParams{
 			ChannelUID: acqPostMessage.ChannelUID,
 			UserUID:    acqPostMessage.UserUID,
 			Content:    acqPostMessage.Content,
@@ -79,21 +80,21 @@ func (h *Handler) handleWs(w http.ResponseWriter, r *http.Request) {
 		}
 		slog.Debug("Message transfer to database completed")
 
-		message := RecordToMessageDTO(messageRecord)
+		message := dto.RecordToMessageDTO(messageRecord)
 		payload, err := json.Marshal(message)
 		if err != nil {
 			slog.Error("Marshalling after mapping is failed")
 			return
 		}
 
-		h.hub.broadcast <- WSMessageDTO{
+		h.hub.broadcast <- dto.WSMessageDTO{
 			Type:    broadcastMessageType,
 			Payload: payload,
 		}
 	}
 }
 
-func setupWsRouter(parentRouter chi.Router, h *Handler) {
+func SetupWsRouter(parentRouter chi.Router, h *Handler) {
 	go h.hub.Run()
 
 	wsRouter := chi.NewRouter()

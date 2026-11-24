@@ -23,21 +23,6 @@ export interface WSMessage {
     payload: Object;
 }
 
-export interface GetChannelResponse {
-    message_id: number;
-    author: MessageAuthorDTO;
-    content: string;
-}
 
-export interface CreateChannelRequest {
-    channel_uid: string;
-    type: string;
-}
-
-export interface GetUserResponse {
-    message_id: number;
-    author: MessageAuthorDTO;
-    content: string;
-}
 
 

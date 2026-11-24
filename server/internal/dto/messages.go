@@ -1,9 +1,6 @@
-package handler
+package dto
 
-import (
-	"encoding/json"
-	"server/internal/repository"
-)
+import "server/internal/repository"
 
 type MessageAuthorDTO struct {
 	UID        string `json:"uid"`
@@ -35,20 +32,4 @@ type CreateMessageRequest struct {
 }
 type CreateMessageResponse struct {
 	MessageID int `json:"message_id"`
-}
-
-type WSPostMessageDTO struct {
-	ChannelUID string `json:"channel_uid"`
-	UserUID    string `json:"user_uid"`
-	Content    string `json:"content"`
-}
-
-type WSMessageDTO struct {
-	Type    string          `json:"type"`
-	Payload json.RawMessage `json:"payload"`
-}
-
-type CreateChannelRequest struct {
-	ChannelUID string                 `json:"channel_uid"`
-	Type       repository.ChannelType `json:"type"`
 }

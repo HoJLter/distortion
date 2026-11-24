@@ -1,5 +1,7 @@
 import { GetMessageResponse } from './dto-models/message.models';
 import { MessageModel } from './models/message.models';
+import { GetUserResponse } from './dto-models/user.models';
+import { UserModel } from './models/user.models';
 
 
 export function mapMessage(dtoMessage: GetMessageResponse): MessageModel{
@@ -12,6 +14,14 @@ export function mapMessage(dtoMessage: GetMessageResponse): MessageModel{
         content: dtoMessage.content,
     };
 
-    console.log("mapping");
+    console.log("message mapping called");
     return mappedMessage
+}
+
+export function mapUser(dtoUser: GetUserResponse): UserModel {
+    let user: UserModel = {
+        username: dtoUser.username
+    }
+    console.log('user mapping called');
+    return user
 }

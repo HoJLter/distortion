@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"server/internal/config"
 	"server/internal/handler"
+	"server/internal/handler/routes"
 	"server/internal/logging"
 	"server/internal/repository"
 )
@@ -31,7 +32,7 @@ func main() {
 	slog.Debug("Repository setup success")
 
 	// server start
-	h := handler.NewHandler(db)
+	h := routes.NewHandler(db)
 	err = handler.RunServer(cfg.Server, h)
 	if err != nil {
 		return

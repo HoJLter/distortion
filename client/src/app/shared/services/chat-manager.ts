@@ -14,7 +14,7 @@ export class ChatManager {
     messages = signal<MessageModel[]>([]);
     isLoading = signal<boolean>(false);
 
-    selectedTextChannel = signal<string>("undefined")
+    selectedTextChannel = signal<string>("choose the channel")
 
     userService: UserService = inject(UserService);
     websocketService = inject(WebsocketService);

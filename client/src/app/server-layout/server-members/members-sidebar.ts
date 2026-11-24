@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, effect, inject, Input } from '@angular/core';
 import { MemberGroup } from './member-group/member-group';
 import { UserGroupModel } from '../../shared/data/models/user.models';
+import {UserService} from '../../shared/services/user-service';
 
 
 @Component({
@@ -10,43 +11,13 @@ import { UserGroupModel } from '../../shared/data/models/user.models';
     templateUrl: './members-sidebar.html',
 })
 export class MembersSidebar {
-    @Input() groups: UserGroupModel[] = [
+    userService: UserService = inject(UserService);
+
+    groups = computed<UserGroupModel[]>(() => [
         {
-            name: 'online',
-            users: [
-                {
-                    username: 'hojlter',
-                },
-                {
-                    username: 'hojlter',
-                },
-                {
-                    username: 'hojlter',
-                },
-                {
-                    username: 'hojlter',
-                },
-                {
-                    username: 'hojlter',
-                },
-            ],
-        },
-        {
-            name: 'offline',
-            users: [
-                {
-                    username: 'megalul',
-                },
-                {
-                    username: 'megalul',
-                },
-                {
-                    username: 'megalul',
-                },
-                {
-                    username: 'megalul',
-                },
-            ],
-        },
-    ];
+            name: "Users",
+            users: this.userService.users()
+        }
+    ])
+
 }

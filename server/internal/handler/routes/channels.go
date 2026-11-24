@@ -1,10 +1,11 @@
-package handler
+package routes
 
 import (
 	"encoding/json"
 	"io"
 	"log/slog"
 	"net/http"
+	"server/internal/dto"
 	"server/internal/repository"
 	"strconv"
 
@@ -37,10 +38,10 @@ func (h Handler) getMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var messages []MessageDTO
+	var messages []dto.MessageDTO
 	for i, record := range messagesRecords {
 		slog.Debug("", "num", i)
-		messages = append(messages, RecordToMessageDTO(record))
+		messages = append(messages, dto.RecordToMessageDTO(record))
 	}
 
 	w.Header().Set("Content-Type", "appcilation/json")
@@ -59,7 +60,7 @@ func (h Handler) createChannel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data CreateChannelRequest
+	var data dto.CreateChannelRequest
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		http.Error(w, "Invalid format", http.StatusBadRequest)
@@ -86,7 +87,7 @@ func (h Handler) getChannels(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data CreateChannelRequest
+	var data dto.GetChannelResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		http.Error(w, "Invalid format", http.StatusBadRequest)
@@ -122,7 +123,7 @@ func (h Handler) connectToVoiceChannel(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func setupChannelsRouter(parentRouter chi.Router, h *Handler) {
+func SetupChannelsRouter(parentRouter chi.Router, h *Handler) {
 	channelsRouter := chi.NewRouter()
 	parentRouter.Mount("/channels", channelsRouter)
 

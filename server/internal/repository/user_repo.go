@@ -10,7 +10,7 @@ import (
 type UserRecord struct {
 	UserUID    string
 	Username   string
-	AvatarPath string
+	AvatarPath *string
 }
 
 type UserRepository struct {
@@ -48,8 +48,8 @@ func (u UserRepository) GetAll(ctx context.Context) ([]UserRecord, error) {
 
 func (u UserRepository) Create(ctx context.Context, user UserRecord) error {
 	_, err := u.pool.Exec(ctx,
-		`INSERT INTO users (uid, username, avatar_path) VALUES ($1, $2)`,
-		user.Username, user.AvatarPath,
+		`INSERT INTO users (uid, username, avatar_path) VALUES ($1, $2, $3)`,
+		user.UserUID, user.Username, user.AvatarPath,
 	)
 	if err != nil {
 		return err

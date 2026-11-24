@@ -13,4 +13,6 @@ import { ChatMessages } from './chat-messages/chat-messages';
     styleUrl: './server-chat.css',
     templateUrl: './server-chat.html',
 })
-export class ServerChat {}
+export class ServerChat {
+    chatManager: ChatManager = inject(ChatManager);
+}

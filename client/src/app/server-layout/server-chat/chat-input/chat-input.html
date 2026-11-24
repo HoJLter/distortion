@@ -1,13 +1,7 @@
 <div class="container">
     <input type="text"
-           placeholder="Type into #{{
-           chatManager.selectedTextChannel() == '' ?
-            'choose the channel' :
-            chatManager.selectedTextChannel}}"
+           placeholder="{{chatManager.selectedTextChannel() === 'choose the channel'? 'Choose the channel to type' : 'Type into the #' + chatManager.selectedTextChannel()}}"
            [formControl]="chatInput"
            (keydown.enter)="sendMessage()"
     >
-<!--    <button class="pin-button">-->
-
-<!--    </button>-->
 </div>

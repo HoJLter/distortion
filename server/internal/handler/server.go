@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 	"server/internal/config"
+	"server/internal/handler/routes"
 	"strconv"
 
 	"github.com/go-chi/chi"
@@ -47,15 +48,16 @@ func SlogLoggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func RunServer(cfg config.ServerConfig, h *Handler) error {
+func RunServer(cfg config.ServerConfig, h *routes.Handler) error {
 	rootRouter := chi.NewRouter()
 	rootRouter.Use(SlogLoggingMiddleware)
 
 	apiRouter := chi.NewRouter()
 	rootRouter.Mount("/api", apiRouter)
 
-	setupChannelsRouter(apiRouter, h)
-	setupWsRouter(apiRouter, h)
+	routes.SetupChannelsRouter(apiRouter, h)
+	routes.SetupWsRouter(apiRouter, h)
+	routes.SetupUsersRouter(apiRouter, h)
 
 	addressToListen := ":" + strconv.Itoa(cfg.Port)
 	slog.Debug("Address to listen is set", "address", addressToListen)

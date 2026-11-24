@@ -1,9 +1,10 @@
-package handler
+package routes
 
 import (
 	"context"
 	"encoding/json"
 	"log/slog"
+	"server/internal/dto"
 	"server/internal/repository"
 	"time"
 
@@ -14,14 +15,14 @@ import (
 type WsClient struct {
 	ctx      context.Context
 	conn     *websocket.Conn
-	messages chan WSMessageDTO
+	messages chan dto.WSMessageDTO
 }
 
 func NewWsClient(ctx context.Context, conn *websocket.Conn) *WsClient {
 	return &WsClient{
 		ctx:      ctx,
 		conn:     conn,
-		messages: make(chan WSMessageDTO, 64),
+		messages: make(chan dto.WSMessageDTO, 64),
 	}
 }
 
@@ -58,7 +59,7 @@ type Hub struct {
 	subscribe   chan *WsClient
 	unsubscribe chan *WsClient
 
-	broadcast chan WSMessageDTO
+	broadcast chan dto.WSMessageDTO
 }
 
 func NewHub() *Hub {
@@ -66,7 +67,7 @@ func NewHub() *Hub {
 		wsClients:   make(map[*WsClient]struct{}),
 		subscribe:   make(chan *WsClient),
 		unsubscribe: make(chan *WsClient),
-		broadcast:   make(chan WSMessageDTO),
+		broadcast:   make(chan dto.WSMessageDTO),
 	}
 }
 
