@@ -22,7 +22,6 @@ export class ChatManager {
     websocketService = inject(WebsocketService);
     dbApi: DbApiService = inject(DbApiService);
 
-
     updateChannels() {
         console.log("update channels called");
         this.dbApi.getChannels().pipe(
